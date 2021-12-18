@@ -1,5 +1,8 @@
 <template>
 <div>
+    <v-overlay :value="overlay">
+        <v-progress-circular indeterminate color="blue" size="45"></v-progress-circular>
+    </v-overlay>
     <v-select :items="categoryList" v-model="valueSelected" label="Chọn một danh sách"></v-select>
     <transition name="slide-fade">
         <v-alert :type="errorGetData.status" v-if="errorGetData.message != ''">
@@ -22,9 +25,17 @@
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </template>
+                <template>
+                    <v-btn v-if="showAutoCreate" @click="autoCreateAccount" color="gray" white class="mb-2">
+                        Tự động tạo tài khoản
+                    </v-btn>
+                </template>
                 <v-dialog v-model="dialog" max-width="500px">
+
                     <!-- add new item  -->
-                    <template v-slot:activator="{ on, attrs }">
+
+                    <template v-if="!showAutoCreate" v-slot:activator="{ on, attrs }">
+
                         <v-btn color="gray" white class="mb-2" v-bind="attrs" v-on="on">
                             Thêm mới
                         </v-btn>
@@ -42,7 +53,7 @@
                                         <v-col>
                                             <div id="preview">
                                                 <img v-if="urlImage" :src="urlImage" />
-                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)"  max-height="500px" max-width="100%" :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" max-height="500px" max-width="100%" :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
 
                                             </div>
                                             <!-- <template>  -->
@@ -60,7 +71,7 @@
                                             <v-text-field v-model="editedItem[getIndexList()].name" label="Tên giáo viên"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
+                                            <v-text-field type="email" v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -103,7 +114,7 @@
                                         <v-col>
                                             <div id="preview">
                                                 <img v-if="urlImage" :src="urlImage" />
-                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)"  max-height: 500px :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" max-height: 500px :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
 
                                             </div>
                                             <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
@@ -115,7 +126,7 @@
                                             <v-text-field v-model="editedItem[getIndexList()].name" label="Tên học sinh"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
+                                            <v-text-field type="email" v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -243,6 +254,29 @@
 
                             </v-card-text>
                         </div>
+                        <div class="formAdmin" v-else-if="getIndexList() == 5">
+                            <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="editedItem[getIndexList()].username" label="Tên đăng nhập"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col>
+                                            <v-select v-model="editedItem[getIndexList()].roles[0].name" :items="itemRoles" label="Vai trò"></v-select>
+                                        </v-col>
+                                    </v-row>
+
+                                </v-container>
+
+                            </v-card-text>
+                        </div>
 
                         <!-- end segment -->
                         <v-card-actions>
@@ -274,7 +308,7 @@
             <v-icon small class="mr-2" @click="editItem(item)">
                 mdi-pencil
             </v-icon>
-            <v-icon small @click="deleteItem(item)">
+            <v-icon small v-if="getIndexList() != 5" @click="deleteItem(item)">
                 mdi-delete
             </v-icon>
 
@@ -296,6 +330,13 @@ export default {
     name: "list-page",
 
     data: () => ({
+        overlay: false,
+        showAutoCreate: false,
+        itemRoles: [
+            "ADMIN",
+            "TEACHER",
+            "STUDENT"
+        ],
         urlImage: null,
         hasImage: false,
         image: null,
@@ -310,7 +351,7 @@ export default {
         activePicker: null,
 
         menu: false,
-        categoryList: ['Danh sách giáo viên', 'Danh sách học sinh', 'Danh sách lớp học', 'Danh sách hoạt động', 'Danh sách món ăn'],
+        categoryList: ['Danh sách giáo viên', 'Danh sách học sinh', 'Danh sách lớp học', 'Danh sách hoạt động', 'Danh sách món ăn', "Danh sách tài khoản"],
         valueSelected: 'Danh sách giáo viên',
         dialog: false,
         dialogDelete: false,
@@ -447,11 +488,16 @@ export default {
                 },
             ],
             [{
-                    text: 'Số thứ tự',
-                    value: 'idTeacher',
-                }, {
-                    text: 'Tên lớp',
-                    value: 'name',
+                    text: 'Tên đăng nhập',
+                    value: 'username',
+                },
+                {
+                    text: 'Email',
+                    value: 'email',
+                },
+                {
+                    text: 'Vai trò',
+                    value: "roles[0].name",
                 },
                 {
                     text: 'Hành động',
@@ -459,6 +505,7 @@ export default {
                     sortable: false
                 },
             ],
+
         ],
 
         desserts: [],
@@ -520,6 +567,15 @@ export default {
                 "element": "",
                 "name": ""
             },
+            {
+                "email": "",
+                "id": 0,
+                "roles": [{
+                    "id": 0,
+                    "name": ""
+                }],
+                "username": ""
+            }
         ],
         defaultItem: [{
                 "account": {
@@ -579,6 +635,15 @@ export default {
                 "element": "",
                 "name": ""
             },
+            {
+                "email": "",
+                "id": 0,
+                "roles": [{
+                    "id": 0,
+                    "name": ""
+                }],
+                "username": ""
+            }
         ],
         search: '',
     }),
@@ -605,6 +670,11 @@ export default {
                 this.initialize();
                 this.errorGetData.message = '';
                 this.errorGetData.status = '';
+                if (this.getName() == "account") {
+                    this.showAutoCreate = true
+                } else {
+                    this.showAutoCreate = false
+                }
             }
 
         }
@@ -616,7 +686,36 @@ export default {
     },
 
     methods: {
+        autoCreateAccount: async function () {
+            try {
+                this.overlay = true
+                let resp1 = await HTTP.post("teacher/create_account")
+                let resp2 = await HTTP.post("student/create_account")
 
+                setTimeout(() => {
+                    this.overlay = false
+                }, 1000)
+                if (resp1.status == 200 && resp2.status == 200) {
+                    this.errorGetData.message = "Thực hiện thành công"
+                    this.errorGetData.status = "success"
+                } else if (resp1.status != 200 && resp2.status == 200) {
+                    this.errorGetData.message = "Tạo tài khoản cho giáo viên thành công, học sinh thất bại"
+                    this.errorGetData.status = "warning"
+                } else if (resp1.status == 200 && resp2.status != 200) {
+                    this.errorGetData.message = "Tạo tài khoản cho học sinh thành công, giáo viên thất bại"
+                    this.errorGetData.status = "warning"
+                } else {
+                    this.errorGetData.message = "Đã có lỗi xảy ra"
+                    this.errorGetData.status = "error"
+                }
+            } catch (error) {
+                this.errorGetData.message = "Đã có lỗi xảy ra"
+                this.errorGetData.status = "error"
+            }
+            this.initialize()
+            this.resetAlert()
+
+        },
         clearSelectFile() {
             try {
                 const input = this.$refs.fileupload;
@@ -641,18 +740,33 @@ export default {
             this.desserts = []
             this.resetAlert()
             try {
+                this.overlay = true
                 let resp = await HTTP.get(`${this.getName()}`);
-                console.log(resp)
-
+                setTimeout(() => {
+                    this.overlay = false
+                }, 1000)
                 this.desserts = resp.data;
 
                 if (this.desserts == '') {
                     this.errorGetData.message = "Không có dữ liệu";
                     this.errorGetData.status = "warning";
+                } else if (this.getName() == "account") {
+
+                    for (let index = 0; index < this.desserts.length; index += 1) {
+                        if (this.desserts[index].roles != null) {
+                            try {
+                                this.desserts[index].roles[0].name = this.desserts[index].roles[0].name.split('_')[1]
+
+                            } catch (error) {
+                                console.log(index + "không có roles ở trong: " + this.desserts[index].id)
+                            }
+                        }
+
+                    }
                 }
 
             } catch (error) {
-                
+
                 if (error.message == "Request failed with status code 403") {
 
                     this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
@@ -662,10 +776,9 @@ export default {
                     this.resetAlert()
 
                 } else {
-
+                    console.log(error)
                     this.errorGetData.message = `Lỗi lấy dữ liệu`;
                     this.errorGetData.status = "error";
-
                 }
 
             }
@@ -682,6 +795,8 @@ export default {
                 return 3;
             } else if (this.valueSelected == 'Danh sách món ăn') {
                 return 4;
+            } else if (this.valueSelected == 'Danh sách tài khoản') {
+                return 5;
             }
         },
         getName() {
@@ -695,6 +810,8 @@ export default {
                 return "activity";
             } else if (this.valueSelected == 'Danh sách món ăn') {
                 return "food";
+            } else if (this.valueSelected == 'Danh sách tài khoản') {
+                return "account";
             }
         },
         checkHasImage(item) {
@@ -731,7 +848,11 @@ export default {
 
         deleteItemConfirm: async function () {
             try {
+                this.overlay = true
                 let resp = await HTTP.delete(`${this.getName()}/${this.desserts[this.editedIndex].id}`);
+                setTimeout(() => {
+                    this.overlay = false
+                }, 1000)
                 if (resp.status == 200) {
                     this.errorGetData.message = "Đã xóa thành công";
                     this.errorGetData.status = "success"
@@ -750,7 +871,7 @@ export default {
                     this.resetAlert()
 
                 } else {
-                    this.errorGetData.message = `${error}`;
+                    this.errorGetData.message = 'Lỗi xóa dữ liệu';
                     this.errorGetData.status = "error"
                 }
             }
@@ -785,15 +906,30 @@ export default {
         save: async function () {
             if (this.editedIndex > -1) {
                 try {
-                    console.log(this.editedItem[this.getIndexList()])
-                    let resp = await HTTP.put(`${this.getName()}/${this.desserts[this.editedIndex].id}`, this.editedItem[this.getIndexList()])
+                    let resp = ''
+                    this.overlay = true
+                    if (this.getName() == "account") {
+
+                        resp = await HTTP.put(`${this.getName()}/${this.desserts[this.editedIndex].id}?role=ROLE_${this.editedItem[this.getIndexList()].roles[0].name}`)
+                    } else {
+                        resp = await HTTP.put(`${this.getName()}/${this.desserts[this.editedIndex].id}`, this.editedItem[this.getIndexList()])
+
+                    }
+                    setTimeout(() => {
+                        this.overlay = false
+                    }, 1000)
+                    // console.log(this.editedItem[this.getIndexList()])
 
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
                             if (this.image != null) {
                                 let fd = new FormData()
                                 fd.append('image', this.image, this.image.name)
+                                this.overlay = true
                                 let resp1 = await HTTP.put(`${this.getName()}/update_photo/${resp.data.id}`, fd, )
+                                setTimeout(() => {
+                                    this.overlay = false
+                                }, 1000)
                                 console.log(resp1)
                                 if (resp1.status == 200) {
                                     this.errorGetData.message = "cập nhật thành công"
@@ -833,14 +969,21 @@ export default {
             } else {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
+                    this.overlay = true
                     let resp = await HTTP.post(`${this.getName()}/`, this.editedItem[this.getIndexList()])
-
+                    setTimeout(() => {
+                        this.overlay = false
+                    }, 1000)
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
                             if (this.image != null) {
                                 let fd = new FormData()
                                 fd.append('image', this.image, this.image.name)
+                                this.overlay = true
                                 let resp1 = await HTTP.put(`${this.getName()}/update_photo/${resp.data.id}`, fd, )
+                                setTimeout(() => {
+                                    this.overlay = false
+                                }, 1000)
                                 if (resp1.status == 200) {
                                     this.errorGetData.message = "Thêm mới thành công"
                                     this.errorGetData.status = "success"
