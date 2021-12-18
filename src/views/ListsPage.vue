@@ -642,6 +642,13 @@ export default {
             this.resetAlert()
             try {
                 let resp = await HTTP.get(`${this.getName()}`);
+                if (resp.status == 403) {
+                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                    this.errorGetData.status = "error"
+                    window.localStorage.removeItem("token")
+                    window.location.reload()
+                    this.resetAlert()
+                }
                 this.desserts = resp.data;
 
                 if (this.desserts == '') {
@@ -716,6 +723,13 @@ export default {
         deleteItemConfirm: async function () {
             try {
                 let resp = await HTTP.delete(`${this.getName()}/${this.desserts[this.editedIndex].id}`);
+                if (resp.status == 403) {
+                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                    this.errorGetData.status = "error"
+                    window.localStorage.removeItem("token")
+                    window.location.reload()
+                    this.resetAlert()
+                }
                 if (resp.status == 200) {
                     this.errorGetData.message = "Đã xóa thành công";
                     this.errorGetData.status = "success"
@@ -761,7 +775,13 @@ export default {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
                     let resp = await HTTP.put(`${this.getName()}/${this.desserts[this.editedIndex].id}`, this.editedItem[this.getIndexList()])
-
+                    if (resp.status == 403) {
+                        this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                        this.errorGetData.status = "error"
+                        window.localStorage.removeItem("token")
+                        window.location.reload()
+                        this.resetAlert()
+                    }
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
                             if (this.image != null) {
@@ -799,7 +819,13 @@ export default {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
                     let resp = await HTTP.post(`${this.getName()}/`, this.editedItem[this.getIndexList()])
-
+                    if (resp.status == 403) {
+                        this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                        this.errorGetData.status = "error"
+                        window.localStorage.removeItem("token")
+                        window.location.reload()
+                        this.resetAlert()
+                    }
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
                             if (this.image != null) {
