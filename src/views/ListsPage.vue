@@ -42,7 +42,7 @@
                                         <v-col>
                                             <div id="preview">
                                                 <img v-if="urlImage" :src="urlImage" />
-                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)"  max-height: 500px :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)"  max-height="500px" max-width="100%" :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
 
                                             </div>
                                             <!-- <template>  -->
