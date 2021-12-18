@@ -8,7 +8,6 @@
     </transition>
     <v-data-table :headers="headers[getIndexList()]" :items="desserts" :search="search" :sort-desc="[false, true]" multi-sort class="elevation-2">
 
-       
         <template v-slot:top>
 
             <v-toolbar flat>
@@ -18,11 +17,11 @@
                 <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line hide-details></v-text-field>
                 <v-divider class="mx-4" inset vertical></v-divider>
                 <v-spacer></v-spacer>
-                 <template>
-            <v-btn color="primary" v-show="!checkEmpty()" class="mb-2 mr-2" @click="initialize">
-                <v-icon>mdi-refresh</v-icon>
-            </v-btn>
-        </template> 
+                <template>
+                    <v-btn color="primary" v-show="!checkEmpty()" class="mb-2 mr-2" @click="initialize">
+                        <v-icon>mdi-refresh</v-icon>
+                    </v-btn>
+                </template>
                 <v-dialog v-model="dialog" max-width="500px">
                     <!-- add new item  -->
                     <template v-slot:activator="{ on, attrs }">
@@ -43,13 +42,13 @@
                                         <v-col>
                                             <v-img :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
                                             <!-- <template>  -->
-                                                <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
+                                            <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
 
-                                                <!-- <v-file-input v-model="fileImageSelected" :rules="rules" accept="image/jpg image/png, image/jpeg, image/bmp" placeholder="Pick an avatar" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
+                                            <!-- <v-file-input v-model="fileImageSelected" :rules="rules" accept="image/jpg image/png, image/jpeg, image/bmp" placeholder="Pick an avatar" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
                                             <!-- </template> -->
-                                                
-                                            <input type="file"  @change="onFileSelected" accept="image/*">
-                                          
+
+                                            <input type="file" @change="onFileSelected" accept="image/*">
+
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -100,8 +99,8 @@
                                         <v-col>
                                             <v-img :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
                                             <!-- <template> -->
-                                                <input type="file"  @change="onFileSelected" accept="image/*">
-                                                <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
+                                            <input type="file" @change="onFileSelected" accept="image/*">
+                                            <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
                                             <!-- </template> -->
                                         </v-col>
                                     </v-row>
@@ -458,10 +457,6 @@ export default {
         desserts: [],
         editedIndex: -1,
         editedItem: [{
-                "account": {
-                    "email": "",
-                    "username": ""
-                },
                 "address": "",
                 "birthday": "",
                 "degree": "",
@@ -474,10 +469,6 @@ export default {
             },
 
             {
-                "account": {
-                    "email": "",
-                    "username": ""
-                },
                 "address": "",
                 "birthday": "",
                 "gender": "",
@@ -516,10 +507,6 @@ export default {
             },
         ],
         defaultItem: [{
-                "account": {
-                    "email": "",
-                    "username": ""
-                },
                 "address": "",
                 "birthday": "",
                 "degree": "",
@@ -532,10 +519,6 @@ export default {
             },
 
             {
-                "account": {
-                    "email": "",
-                    "username": ""
-                },
                 "address": "",
                 "birthday": "",
                 "email": "",
@@ -664,7 +647,7 @@ export default {
             // if (this.desserts == '' && this.errorGetData.message == '') {
             //     return 1;
             if (this.desserts == '') return true;
-            else{
+            else {
                 return false;
             }
             // return this.desserts == '' && this.errorGetData.message == '';
@@ -753,16 +736,17 @@ export default {
                                 let fd = new FormData()
                                 fd.append('image', this.image, this.image.name)
                                 let resp1 = await HTTP.put(`${this.getName()}/update_photo/${resp.data.id}`, fd, )
+                                console.log(resp1)
                                 if (resp1.status == 200) {
                                     this.errorGetData.message = "cập nhật thành công"
-                            this.errorGetData.status = "success"
+                                    this.errorGetData.status = "success"
                                 } else {
                                     this.errorGetData.message = "Lỗi khi cập nhật  ảnh"
                                     this.errorGetData.status = "warning"
                                 }
                             } else {
                                 this.errorGetData.message = "cập nhật thành công"
-                            this.errorGetData.status = "success"
+                                this.errorGetData.status = "success"
                             }
                         } else {
                             this.errorGetData.message = "cập nhật thành công"
@@ -810,6 +794,7 @@ export default {
                         this.errorGetData.message = "Lỗi thêm mới"
                         this.errorGetData.status = "error"
                     }
+                    
                     this.desserts.push(this.editedItem[this.getIndexList()])
                 } catch (error) {
                     this.errorGetData.message = "Lỗi thêm mới"
@@ -817,6 +802,7 @@ export default {
                 }
                 this.resetAlert()
             }
+            this.initialize();
             this.close()
         },
     },
