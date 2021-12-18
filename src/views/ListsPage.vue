@@ -618,6 +618,7 @@ export default {
         },
         initialize: async function () {
             console.log("reset data")
+            this.desserts = []
             this.resetAlert()
             try {
                 let resp = await HTTP.get(`${this.getName()}`);
