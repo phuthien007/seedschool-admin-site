@@ -457,6 +457,10 @@ export default {
         desserts: [],
         editedIndex: -1,
         editedItem: [{
+                "account": {
+                    "email": "",
+                    "username": ""
+                },
                 "address": "",
                 "birthday": "",
                 "degree": "",
@@ -469,6 +473,10 @@ export default {
             },
 
             {
+                "account": {
+                    "email": "",
+                    "username": ""
+                },
                 "address": "",
                 "birthday": "",
                 "gender": "",
@@ -507,6 +515,10 @@ export default {
             },
         ],
         defaultItem: [{
+                "account": {
+                    "email": "",
+                    "username": ""
+                },
                 "address": "",
                 "birthday": "",
                 "degree": "",
@@ -519,6 +531,10 @@ export default {
             },
 
             {
+                "account": {
+                    "email": "",
+                    "username": ""
+                },
                 "address": "",
                 "birthday": "",
                 "email": "",
@@ -714,17 +730,6 @@ export default {
             this.image = event.target.files[0]
         },
         save: async function () {
-            //               this.editedIndex = this.desserts.indexOf(item)
-            //             console.log("item " + item)
-            //             if(resp.status == 200 ){
-            //                 // let resp1 = await HTTP.put(`${this.getName()}/update_photo/${item.id}`, this.fileImageSelected,{
-            //                 //     headers:{
-            //                 //         "content-type":"image/jpg, image/png, image/jpeg, image/bmp" 
-            //                 //     }
-            //                 // })
-
-            // }
-            //             this.resetError()
             if (this.editedIndex > -1) {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
@@ -762,7 +767,7 @@ export default {
                     this.errorGetData.status = "error"
                 }
                 this.resetAlert()
-                Object.assign(this.desserts[this.editedIndex], this.editedItem[this.getIndexList()])
+                // Object.assign(this.desserts[this.editedIndex], this.editedItem[this.getIndexList()])
             } else {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
@@ -795,15 +800,15 @@ export default {
                         this.errorGetData.status = "error"
                     }
                     
-                    this.desserts.push(this.editedItem[this.getIndexList()])
+                    // this.desserts.push(this.editedItem[this.getIndexList()])
                 } catch (error) {
                     this.errorGetData.message = "Lỗi thêm mới"
                     this.errorGetData.status = "error"
                 }
                 this.resetAlert()
             }
-            this.initialize();
             this.close()
+            this.initialize();
         },
     },
     // filters: {
