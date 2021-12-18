@@ -40,14 +40,18 @@
                                 <v-container>
                                     <v-row>
                                         <v-col>
-                                            <v-img :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
+                                            <div id="preview">
+                                                <img v-if="urlImage" :src="urlImage" />
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
+
+                                            </div>
                                             <!-- <template>  -->
                                             <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
 
                                             <!-- <v-file-input v-model="fileImageSelected" :rules="rules" accept="image/jpg image/png, image/jpeg, image/bmp" placeholder="Pick an avatar" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
                                             <!-- </template> -->
 
-                                            <input type="file" @change="onFileSelected" accept="image/*">
+                                            <input type="file" ref="fileupload" @change="onFileSelected" accept="image/*">
 
                                         </v-col>
                                     </v-row>
@@ -97,9 +101,11 @@
                                 <v-container>
                                     <v-row>
                                         <v-col>
-                                            <v-img :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
-                                            <!-- <template> -->
-                                            <input type="file" @change="onFileSelected" accept="image/*">
+                                            <div id="preview">
+                                                <img v-if="urlImage" :src="urlImage" />
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
+
+                                            </div>
                                             <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
                                             <!-- </template> -->
                                         </v-col>
@@ -290,6 +296,7 @@ export default {
     name: "list-page",
 
     data: () => ({
+        urlImage: null,
         hasImage: false,
         image: null,
         errorGetData: {
@@ -609,6 +616,18 @@ export default {
     },
 
     methods: {
+
+        clearSelectFile() {
+            try {
+                const input = this.$refs.fileupload;
+                input.type = 'text';
+                input.type = 'file';
+            } catch (error) {
+                console.log("No file is selected")
+            }
+            this.urlImage = null
+
+        },
         resetAlert() {
             setTimeout(() => {
                 this.errorGetData.message = ''
@@ -618,16 +637,18 @@ export default {
         },
         initialize: async function () {
             console.log("reset data")
+            this.clearSelectFile()
             this.desserts = []
             this.resetAlert()
             try {
                 let resp = await HTTP.get(`${this.getName()}`);
                 this.desserts = resp.data;
-
+                
                 if (this.desserts == '') {
                     this.errorGetData.message = "Không có dữ liệu";
                     this.errorGetData.status = "warning";
                 }
+                
             } catch (error) {
                 this.errorGetData.message = `${error}`;
                 this.errorGetData.status = "error";
@@ -660,6 +681,14 @@ export default {
                 return "food";
             }
         },
+        checkHasImage(item) {
+            // console.log(item == null || item.split("export=view&id=")[1] == "null" ||  item == '')
+            if (item == null || item == '' || item.split("export=view&id=")[1] == "null") {
+                return false
+            } else {
+                return true
+            }
+        },
         checkEmpty() {
             // if (this.desserts == '' && this.errorGetData.message == '') {
             //     return 1;
@@ -675,6 +704,7 @@ export default {
             this.editedIndex = this.desserts.indexOf(item)
             this.editedItem[this.getIndexList()] = Object.assign({}, item)
             this.dialog = true
+            this.clearSelectFile()
         },
 
         deleteItem(item) {
@@ -712,6 +742,7 @@ export default {
                 this.editedItem[this.getIndexList()] = Object.assign({}, this.defaultItem[this.getIndexList()])
                 this.editedIndex = -1
             })
+            this.clearSelectFile()
         },
 
         closeDelete() {
@@ -721,14 +752,9 @@ export default {
                 this.editedIndex = -1
             })
         },
-        setImage: function (output) {
-            this.hasImage = true;
-            this.image = output;
-            console.log('Info', output.info)
-            console.log('Exif', output.exif)
-        },
         onFileSelected(event) {
             this.image = event.target.files[0]
+            this.urlImage = URL.createObjectURL(this.image)
         },
         save: async function () {
             if (this.editedIndex > -1) {
@@ -800,7 +826,7 @@ export default {
                         this.errorGetData.message = "Lỗi thêm mới"
                         this.errorGetData.status = "error"
                     }
-                    
+
                     // this.desserts.push(this.editedItem[this.getIndexList()])
                 } catch (error) {
                     this.errorGetData.message = "Lỗi thêm mới"
@@ -812,11 +838,11 @@ export default {
             this.initialize();
         },
     },
-    // filters: {
-    //     pickExactDate(date = '1979-05-27T17:00:00Z') {
-    //         return data.split('T')[0];
-    //     },
-    // }
+    filters: {
+        pickExactDate(date = '1979-05-27T17:00:00Z') {
+            return date.split('T')[0];
+        },
+    }
 }
 </script>
 
@@ -840,5 +866,16 @@ export default {
 
 #fileInput {
     display: none;
+}
+
+#preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#preview img {
+    max-width: 100%;
+    max-height: 500px;
 }
 </style>
