@@ -42,7 +42,7 @@
                                         <v-col>
                                             <div id="preview">
                                                 <img v-if="urlImage" :src="urlImage" />
-                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" :lazy-src="editedItem[getIndexList()].urlImg"  :src="editedItem[getIndexList()].urlImg"></v-img>
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" max-width: 100% max-height: 500px :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
 
                                             </div>
                                             <!-- <template>  -->
@@ -103,7 +103,7 @@
                                         <v-col>
                                             <div id="preview">
                                                 <img v-if="urlImage" :src="urlImage" />
-                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" :lazy-src="editedItem[getIndexList()].urlImg" max-height="300" max-width="450" :src="editedItem[getIndexList()].urlImg"></v-img>
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" max-width: 100% max-height: 500px :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
 
                                             </div>
                                             <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
@@ -643,12 +643,12 @@ export default {
             try {
                 let resp = await HTTP.get(`${this.getName()}`);
                 this.desserts = resp.data;
-                
+
                 if (this.desserts == '') {
                     this.errorGetData.message = "Không có dữ liệu";
                     this.errorGetData.status = "warning";
                 }
-                
+
             } catch (error) {
                 this.errorGetData.message = `Lỗi lấy dữ liệu`;
                 this.errorGetData.status = "error";
