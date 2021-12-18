@@ -82,10 +82,13 @@ export default {
                 } else {
                     this.errorGetData.message = "Đã xảy ra lỗi trong quá trình đăng nhập";
                     this.errorGetData.status = "warning";
+                    window.localStorage.removeItem("token")
+
                 }
             } catch (error) {
                 this.errorGetData.message = "Đã có lỗi xảy ra";
                 this.errorGetData.status = "error";
+                window.localStorage.removeItem("token")
             }
             setTimeout(() => {
                 this.errorGetData.message = '';

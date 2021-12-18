@@ -650,7 +650,7 @@ export default {
                 }
                 
             } catch (error) {
-                this.errorGetData.message = `${error}`;
+                this.errorGetData.message = `Lỗi lấy dữ liệu`;
                 this.errorGetData.status = "error";
             }
 
