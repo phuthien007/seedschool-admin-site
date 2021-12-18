@@ -642,13 +642,8 @@ export default {
             this.resetAlert()
             try {
                 let resp = await HTTP.get(`${this.getName()}`);
-                if (resp.status == 403) {
-                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
-                    this.errorGetData.status = "error"
-                    window.localStorage.removeItem("token")
-                    window.location.reload()
-                    this.resetAlert()
-                }
+                console.log(resp)
+
                 this.desserts = resp.data;
 
                 if (this.desserts == '') {
@@ -657,8 +652,22 @@ export default {
                 }
 
             } catch (error) {
-                this.errorGetData.message = `Lỗi lấy dữ liệu`;
-                this.errorGetData.status = "error";
+                
+                if (error.message == "Request failed with status code 403") {
+
+                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                    this.errorGetData.status = "error"
+                    window.localStorage.removeItem("token")
+                    window.location.reload()
+                    this.resetAlert()
+
+                } else {
+
+                    this.errorGetData.message = `Lỗi lấy dữ liệu`;
+                    this.errorGetData.status = "error";
+
+                }
+
             }
 
         },
@@ -723,13 +732,6 @@ export default {
         deleteItemConfirm: async function () {
             try {
                 let resp = await HTTP.delete(`${this.getName()}/${this.desserts[this.editedIndex].id}`);
-                if (resp.status == 403) {
-                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
-                    this.errorGetData.status = "error"
-                    window.localStorage.removeItem("token")
-                    window.location.reload()
-                    this.resetAlert()
-                }
                 if (resp.status == 200) {
                     this.errorGetData.message = "Đã xóa thành công";
                     this.errorGetData.status = "success"
@@ -739,8 +741,18 @@ export default {
                 }
                 console.log(resp.data);
             } catch (error) {
-                this.errorGetData.message = `${error}`;
-                this.errorGetData.status = "error"
+                if (error.message == "Request failed with status code 403") {
+
+                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                    this.errorGetData.status = "error"
+                    window.localStorage.removeItem("token")
+                    window.location.reload()
+                    this.resetAlert()
+
+                } else {
+                    this.errorGetData.message = `${error}`;
+                    this.errorGetData.status = "error"
+                }
             }
             this.desserts.splice(this.editedIndex, 1)
             setTimeout(() => {
@@ -775,13 +787,7 @@ export default {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
                     let resp = await HTTP.put(`${this.getName()}/${this.desserts[this.editedIndex].id}`, this.editedItem[this.getIndexList()])
-                    if (resp.status == 403) {
-                        this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
-                        this.errorGetData.status = "error"
-                        window.localStorage.removeItem("token")
-                        window.location.reload()
-                        this.resetAlert()
-                    }
+
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
                             if (this.image != null) {
@@ -810,8 +816,17 @@ export default {
                         this.errorGetData.status = "error"
                     }
                 } catch (error) {
-                    this.errorGetData.message = "Lỗi cập nhật dữ liệu"
-                    this.errorGetData.status = "error"
+                    if (error.message == "Request failed with status code 403") {
+                        this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                        this.errorGetData.status = "error"
+                        window.localStorage.removeItem("token")
+                        window.location.reload()
+                        this.resetAlert()
+                    } else {
+                        this.errorGetData.message = "Lỗi cập nhật dữ liệu"
+                        this.errorGetData.status = "error"
+                    }
+
                 }
                 this.resetAlert()
                 // Object.assign(this.desserts[this.editedIndex], this.editedItem[this.getIndexList()])
@@ -819,13 +834,7 @@ export default {
                 try {
                     console.log(this.editedItem[this.getIndexList()])
                     let resp = await HTTP.post(`${this.getName()}/`, this.editedItem[this.getIndexList()])
-                    if (resp.status == 403) {
-                        this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
-                        this.errorGetData.status = "error"
-                        window.localStorage.removeItem("token")
-                        window.location.reload()
-                        this.resetAlert()
-                    }
+
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
                             if (this.image != null) {
@@ -855,8 +864,16 @@ export default {
 
                     // this.desserts.push(this.editedItem[this.getIndexList()])
                 } catch (error) {
-                    this.errorGetData.message = "Lỗi thêm mới"
-                    this.errorGetData.status = "error"
+                    if (error.message == "Request failed with status code 403") {
+                        this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                        this.errorGetData.status = "error"
+                        window.localStorage.removeItem("token")
+                        window.location.reload()
+                        this.resetAlert()
+                    } else {
+                        this.errorGetData.message = "Lỗi thêm mới"
+                        this.errorGetData.status = "error"
+                    }
                 }
                 this.resetAlert()
             }
