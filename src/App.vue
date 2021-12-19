@@ -13,7 +13,7 @@
         <h1>Trường mầm non Seedschool</h1>
 
         <v-spacer></v-spacer>
-        <div>
+        <div  v-if="checkLogin()">
 
             <v-btn icon>
                 <v-badge :content="messages" :value="messages" color="red" overlap>
@@ -42,9 +42,10 @@
                                     <v-divider class="my-3"></v-divider>
                                     <router-link to="/logout">
                                         <v-btn @click="logoutFunc" depressed rounded text>
-                                        Logout
-                                    </v-btn></router-link>
-                                    
+                                            Logout
+                                        </v-btn>
+                                    </router-link>
+
                                 </div>
                             </v-list-item-content>
                         </v-card>
@@ -79,11 +80,11 @@
                                 </v-btn>
                                 <v-divider class="my-3"></v-divider>
                                 <router-link class="nav-link" to="/logout">
-<v-btn depressed rounded text @click="logoutFunc">
-                                    Logout
-                                </v-btn>
+                                    <v-btn depressed rounded text @click="logoutFunc">
+                                        Logout
+                                    </v-btn>
                                 </router-link>
-                                
+
                             </div>
                         </v-list-item-content>
                     </v-card>
@@ -121,7 +122,7 @@ export default {
     },
 
     data: () => ({
-        
+
         messages: 3,
         user: {
             initials: 'JD',
@@ -130,7 +131,10 @@ export default {
         },
     }),
     methods: {
-        logoutFunc(){
+        checkLogin(){
+            return window.localStorage.getItem('token') != null 
+        },
+        logoutFunc() {
             window.localStorage.removeItem("token")
         }
     }
