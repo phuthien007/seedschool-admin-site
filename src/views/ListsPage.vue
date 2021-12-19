@@ -25,16 +25,16 @@
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </template>
-                <template>
-                    <v-btn v-if="showAutoCreate" @click="autoCreateAccount" color="gray" white class="mb-2">
+                <template v-if="showAutoCreate">
+                    <v-btn  @click="autoCreateAccount" color="gray" white class="mb-2">
                         Tự động tạo tài khoản
                     </v-btn>
                 </template>
-                <v-dialog v-model="dialog" max-width="500px">
+                <v-dialog v-else v-model="dialog" max-width="500px">
 
                     <!-- add new item  -->
 
-                    <template v-if="!showAutoCreate" v-slot:activator="{ on, attrs }">
+                    <template v-slot:activator="{ on, attrs }">
 
                         <v-btn color="gray" white class="mb-2" v-bind="attrs" v-on="on">
                             Thêm mới
@@ -259,12 +259,12 @@
                                 <v-container>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field v-model="editedItem[getIndexList()].username" label="Tên đăng nhập"></v-text-field>
+                                            <v-text-field disabled v-model="editedItem[getIndexList()].username" label="Tên đăng nhập"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
+                                            <v-text-field disabled v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
