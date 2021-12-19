@@ -43,11 +43,7 @@ export default {
     name: 'SideBar',
 
     data: () => ({
-        items: [{
-                title: 'Thông tin cá nhân',
-                icon: 'mdi-account',
-                link: '/admin'
-            },
+        items: [
             {
                 title: 'Danh sách',
                 icon: 'mdi-clipboard-list',
@@ -94,17 +90,17 @@ export default {
             console.log(url);
             try {
                 if (url[1] == 'lists') {
-                    return 1;
+                    return 0;
                 } else if (url[1] == 'statis') {
-                    return 2;
+                    return 1;
                 } else if (url[1] == 'fee-school') {
-                    return 3;
+                    return 2;
                 } else if (url[1] == 'action-outdoor') {
-                    return 4;
+                    return 3;
                 } else if (url[1] == 'menu') {
-                    return 5;
+                    return 4;
                 } else if (url[1] == 'settings') {
-                    return 6;
+                    return 5;
                 } else {
                     return 0;
                 }

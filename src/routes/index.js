@@ -1,8 +1,5 @@
-import DetailInformationPage from '../views/DetailInformationPage.vue'
-// import HelloWorld from '../components/HelloWorld.vue'
 import Vue from "vue";
 import VueRouter from "vue-router";
-
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -11,7 +8,6 @@ const router = new VueRouter({
       path: '*',
       redirect:'/admin'
       ,
-              
     },
     {
       path: '/login',
@@ -26,7 +22,7 @@ const router = new VueRouter({
     },
   {
     path: '/admin',
-    component: DetailInformationPage
+    redirect : '/admin/lists'
     ,
   },
   {
