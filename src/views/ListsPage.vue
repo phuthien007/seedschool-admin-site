@@ -25,18 +25,18 @@
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </template>
-                <template v-if="showAutoCreate">
-                    <v-btn  @click="autoCreateAccount" color="gray" white class="mb-2">
+                <template >
+                    <v-btn v-if="showAutoCreate" @click="autoCreateAccount" color="gray" white class="mb-2">
                         Tự động tạo tài khoản
                     </v-btn>
                 </template>
-                <v-dialog v-else v-model="dialog" max-width="500px">
+                <v-dialog v-model="dialog" max-width="500px">
 
                     <!-- add new item  -->
 
-                    <template v-slot:activator="{ on, attrs }">
+                    <template v-if="!showAutoCreate" v-slot:activator="{ on, attrs }">
 
-                        <v-btn color="gray" white class="mb-2" v-bind="attrs" v-on="on">
+                        <v-btn  color="gray" white class="mb-2" v-bind="attrs" v-on="on">
                             Thêm mới
                         </v-btn>
                     </template>
@@ -259,12 +259,12 @@
                                 <v-container>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field disabled v-model="editedItem[getIndexList()].username" label="Tên đăng nhập"></v-text-field>
+                                            <v-text-field v-model="editedItem[getIndexList()].username" label="Tên đăng nhập"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field disabled v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
+                                            <v-text-field v-model="editedItem[getIndexList()].email" label="Email"></v-text-field>
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -722,7 +722,7 @@ export default {
                 input.type = 'text';
                 input.type = 'file';
             } catch (error) {
-                console.log("No file is selected")
+                console.log()
             }
             this.urlImage = null
 
@@ -735,7 +735,6 @@ export default {
 
         },
         initialize: async function () {
-            console.log("reset data")
             this.clearSelectFile()
             this.desserts = []
             this.resetAlert()
@@ -766,7 +765,9 @@ export default {
                 }
 
             } catch (error) {
-
+                setTimeout(() => {
+                    this.overlay = false
+                }, 1000)
                 if (error.message == "Request failed with status code 403") {
 
                     this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
@@ -776,7 +777,6 @@ export default {
                     this.resetAlert()
 
                 } else {
-                    console.log(error)
                     this.errorGetData.message = `Lỗi lấy dữ liệu`;
                     this.errorGetData.status = "error";
                 }
@@ -815,7 +815,6 @@ export default {
             }
         },
         checkHasImage(item) {
-            // console.log(item == null || item.split("export=view&id=")[1] == "null" ||  item == '')
             if (item == null || item == '' || item.split("export=view&id=")[1] == "null") {
                 return false
             } else {
@@ -860,8 +859,10 @@ export default {
                     this.errorGetData.message = "Có lỗi xảy ra";
                     this.errorGetData.status = "error"
                 }
-                console.log(resp.data);
             } catch (error) {
+                setTimeout(() => {
+                    this.overlay = false
+                }, 1000)
                 if (error.message == "Request failed with status code 403") {
 
                     this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
@@ -918,7 +919,6 @@ export default {
                     setTimeout(() => {
                         this.overlay = false
                     }, 1000)
-                    // console.log(this.editedItem[this.getIndexList()])
 
                     if (resp.status == 200) {
                         if (this.getName() == "teacher" || this.getName() == "student") {
@@ -930,7 +930,6 @@ export default {
                                 setTimeout(() => {
                                     this.overlay = false
                                 }, 1000)
-                                console.log(resp1)
                                 if (resp1.status == 200) {
                                     this.errorGetData.message = "cập nhật thành công"
                                     this.errorGetData.status = "success"
@@ -952,6 +951,9 @@ export default {
                         this.errorGetData.status = "error"
                     }
                 } catch (error) {
+                    setTimeout(() => {
+                        this.overlay = false
+                    }, 1000)
                     if (error.message == "Request failed with status code 403") {
                         this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
                         this.errorGetData.status = "error"
@@ -968,7 +970,6 @@ export default {
                 // Object.assign(this.desserts[this.editedIndex], this.editedItem[this.getIndexList()])
             } else {
                 try {
-                    console.log(this.editedItem[this.getIndexList()])
                     this.overlay = true
                     let resp = await HTTP.post(`${this.getName()}/`, this.editedItem[this.getIndexList()])
                     setTimeout(() => {
@@ -1007,6 +1008,9 @@ export default {
 
                     // this.desserts.push(this.editedItem[this.getIndexList()])
                 } catch (error) {
+                    setTimeout(() => {
+                        this.overlay = false
+                    }, 1000)
                     if (error.message == "Request failed with status code 403") {
                         this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
                         this.errorGetData.status = "error"

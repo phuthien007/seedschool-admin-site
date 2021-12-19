@@ -70,7 +70,7 @@
                                 <v-avatar color="brown">
                                     <span class="white--text text-h5">{{ user.initials }}</span>
                                 </v-avatar>
-                                <h3>{{ user.fullName }}</h3>
+                                <h3>{{ user.username }}</h3>
                                 <p class="text-caption mt-1">
                                     {{ user.email }}
                                 </p>
@@ -114,6 +114,7 @@
 
 <script>
 import SideBar from './components/SideBar.vue';
+import {HTTP} from './api/index'
 export default {
     name: 'App',
 
@@ -125,11 +126,18 @@ export default {
 
         messages: 3,
         user: {
-            initials: 'JD',
-            fullName: 'John Doe',
-            email: 'john.doe@doe.com',
+            initials: 'AD',
+            username: 'admin',
+            email: 'admin.seedschool@gmail.com',
         },
     }),
+    mounted: async function(){
+        this.user.username = window.localStorage.getItem('username')
+        this.user.initials = this.user.username[0] + this.user.username[1]
+        this.user.initials = this.user.initials.toUpperCase()
+        let resp = await HTTP.get(`account/search?username=${this.user.username}`)
+        this.user.email = resp.data.email
+    },
     methods: {
         checkLogin(){
             return window.localStorage.getItem('token') != null 

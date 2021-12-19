@@ -5,14 +5,14 @@
             {{errorGetData.message}}
         </v-alert>
     </transition>
-        <form id="formLogin">
-            <h1>Đăng nhập trang quản lý</h1>
-            <v-text-field v-model="username" :error-messages="usernameErrors" label="Tên đăng nhập" required @input="$v.username.$touch()" @blur="$v.username.$touch()"></v-text-field>
-            <v-text-field type="password" v-model="password" :error-messages="passwordErrors" label="Mật khẩu" required @input="$v.password.$touch()" @blur="$v.password.$touch()"></v-text-field>
-            <v-btn class="mr-4" @click="submit(username, password)" color="primary">
-                Đăng nhập
-            </v-btn>
-        </form>
+    <form id="formLogin">
+        <h1>Đăng nhập trang quản lý</h1>
+        <v-text-field v-model="username" :error-messages="usernameErrors" label="Tên đăng nhập" required @input="$v.username.$touch()" @blur="$v.username.$touch()"></v-text-field>
+        <v-text-field type="password" v-model="password" :error-messages="passwordErrors" label="Mật khẩu" required @input="$v.password.$touch()" @blur="$v.password.$touch()"></v-text-field>
+        <v-btn class="mr-4" @click="submit(username, password)" color="primary">
+            Đăng nhập
+        </v-btn>
+    </form>
 </div>
 </template>
 
@@ -60,7 +60,7 @@ export default {
         passwordErrors() {
             const errors = []
             if (!this.$v.password.$dirty) return errors
-                !this.$v.password.required && errors.push('Password is required.')
+            !this.$v.password.required && errors.push('Password is required.')
             return errors
         },
     },
@@ -73,11 +73,27 @@ export default {
                         "username": username,
                         "password": password
                     }), );
-                console.log(resp.data);
                 if (resp.status == 200) {
-                    window.localStorage.setItem("token", resp.data.token);
-                    this.errorGetData.message = "Đăng nhập thành công";
-                    this.errorGetData.status = "success";
+                    try {
+                        let resp1 = await HTTP.get(`account/search?username=${username}`, {
+                            headers: {
+                                'Authorization': `${resp.data.token}`
+                            }
+                        })
+                        if (resp1.status == 200) {
+                            window.localStorage.setItem("token", resp.data.token);
+                            window.localStorage.setItem("username", username);
+                            this.errorGetData.message = "Đăng nhập thành công";
+                            this.errorGetData.status = "success";
+                        } else {
+                            this.errorGetData.message = "Đăng nhập không thành công";
+                            this.errorGetData.status = "warning";
+                        }
+
+                    } catch (error) {
+                        this.errorGetData.message = "Đăng nhập không thành công do tài khoản của bạn không có quyền truy cập";
+                        this.errorGetData.status = "warning";
+                    }
 
                 } else {
                     this.errorGetData.message = "Đã xảy ra lỗi trong quá trình đăng nhập";
@@ -94,14 +110,14 @@ export default {
                 this.errorGetData.message = '';
                 this.errorGetData.status = '';
                 try {
-                     if (resp.status == 200) {
-                    window.location.href = window.location.href.split("/login")[0] + "/";
-                    window.location.reload();
-                }
+                    if (resp.status == 200) {
+                        window.location.href = window.location.href.split("/login")[0] + "/";
+                        window.location.reload();
+                    }
                 } catch (error) {
                     console.log(error);
                 }
-               
+
             }, 1000);
 
         },
