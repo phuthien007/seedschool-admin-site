@@ -114,13 +114,16 @@
                                         <v-col>
                                             <div id="preview">
                                                 <img v-if="urlImage" :src="urlImage" />
-                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImg)" max-height: 500px :lazy-src="editedItem[getIndexList()].urlImg" :src="editedItem[getIndexList()].urlImg"></v-img>
+                                                <v-img v-else-if="checkHasImage(editedItem[getIndexList()].urlImage)" max-height="500px" max-width="100%" :lazy-src="editedItem[getIndexList()].urlImage" :src="editedItem[getIndexList()].urlImage"></v-img>
 
                                             </div>
+                                            <!-- <template>  -->
                                             <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
-                                            <!-- </template> -->
-                                            <input type="file" ref="fileupload" @change="onFileSelected" accept="image/*">
 
+                                            <!-- <v-file-input v-model="fileImageSelected" :rules="rules" accept="image/jpg image/png, image/jpeg, image/bmp" placeholder="Pick an avatar" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
+                                            <!-- </template> -->
+
+                                            <input type="file" ref="fileupload" @change="onFileSelected" accept="image/*">
                                         </v-col>
                                     </v-row>
                                     <v-row>
@@ -512,7 +515,8 @@ export default {
 
         desserts: [],
         editedIndex: -1,
-        editedItem: [{
+        editedItem: [
+            {
                 "account": {
                     "email": "",
                     "username": ""
@@ -540,7 +544,7 @@ export default {
                 "name": "",
                 "phoneNumber": "",
                 "schoolDay": "",
-                "urlImage": ""
+               "urlImage": ""
             },
             {
                 "name": "",
@@ -747,7 +751,7 @@ export default {
                     this.overlay = false
                 }, 1000)
                 this.desserts = resp.data;
-
+                console.log(this.desserts)
                 if (this.desserts == '') {
                     this.errorGetData.message = "Không có dữ liệu";
                     this.errorGetData.status = "warning";
