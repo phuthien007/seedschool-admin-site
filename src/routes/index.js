@@ -20,11 +20,11 @@ const router = new VueRouter({
       redirect:'/login',
               
     },
-  {
-    path: '/admin',
-    redirect : '/admin/lists'
-    ,
-  },
+  // {
+  //   path: '/admin',
+  //   redirect : '/admin/lists'
+  //   ,
+  // },
   {
     path: '/admin/action-outdoor',
     name: 'action-outdoor',
@@ -62,8 +62,8 @@ const router = new VueRouter({
   }
   ,
   {
-    path: '/admin/statis',
-    name: 'statis',
+    path: '/admin',
+    name: 'admin',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

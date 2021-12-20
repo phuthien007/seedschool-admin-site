@@ -43,17 +43,17 @@ export default {
     name: 'SideBar',
 
     data: () => ({
-        items: [
+        items: [{
+                title: 'Thống kê',
+                icon: 'mdi-view-dashboard',
+                link: '/admin'
+            },
             {
                 title: 'Danh sách',
                 icon: 'mdi-clipboard-list',
                 link: '/admin/lists'
             },
-            {
-                title: 'Thống kê',
-                icon: 'mdi-view-dashboard',
-                link: '/admin/statis'
-            },
+            
             {
                 title: 'Chi phí',
                 icon: 'mdi-cash-multiple',
@@ -90,9 +90,9 @@ export default {
             console.log(url);
             try {
                 if (url[1] == 'lists') {
-                    return 0;
-                } else if (url[1] == 'statis') {
                     return 1;
+                } else if (url[1] == 'statis') {
+                    return 0;
                 } else if (url[1] == 'fee-school') {
                     return 2;
                 } else if (url[1] == 'action-outdoor') {

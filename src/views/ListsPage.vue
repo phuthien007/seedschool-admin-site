@@ -25,7 +25,7 @@
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </template>
-                <template >
+                <template>
                     <v-btn v-if="showAutoCreate" @click="autoCreateAccount" color="gray" white class="mb-2">
                         Tự động tạo tài khoản
                     </v-btn>
@@ -36,7 +36,7 @@
 
                     <template v-if="!showAutoCreate" v-slot:activator="{ on, attrs }">
 
-                        <v-btn  color="gray" white class="mb-2" v-bind="attrs" v-on="on">
+                        <v-btn color="gray" white class="mb-2" v-bind="attrs" v-on="on">
                             Thêm mới
                         </v-btn>
                     </template>
@@ -119,6 +119,8 @@
                                             </div>
                                             <!-- <v-file-input @change="onFileSelected" :rules="rules" accept="image/*" placeholder="Chọn ảnh" prepend-icon="mdi-camera" label="Avatar"></v-file-input> -->
                                             <!-- </template> -->
+                                            <input type="file" ref="fileupload" @change="onFileSelected" accept="image/*">
+
                                         </v-col>
                                     </v-row>
                                     <v-row>
