@@ -2,6 +2,7 @@ import axios from 'axios';
 
 // var BASE_URL = `http://192.168.0.3:8080/api/v1/`;
 var BASE_URL = 'https://seedschool.herokuapp.com/api/v1/';
+// var BASE_URL = `http://192.168.50.23:8080/api/v1/`;
 var token = window.localStorage.getItem("token");
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common["Access-Control-Allow-Methods"] = 'DELETE, POST, GET, OPTIONS';

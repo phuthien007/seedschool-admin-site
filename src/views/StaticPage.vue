@@ -1,40 +1,30 @@
 <template>
-<div>
-    <v-container class="px-auto">
-        <v-row class="mt-2 mx-auto">
-            <!-- <v-card elevation="3"> -->
-                <StatisticUser />
-            <!-- </v-card> -->
+<div id="static-page">
 
-        </v-row>
-        <v-row class=" mt-2 mx-auto">
-            <v-row class="mt-3 ml-4">
-                <v-card>
-                    <v-col>
-                        <AreaChart />
-                    </v-col>
-                    <v-col>
-                        <PieChart />
-                    </v-col>
+    <!-- <v-card elevation="3"> -->
+    <StatisticUser class="ml-2" />
+    <!-- </v-card> -->
+    <v-card elevation="5" class="mt-2 ml-4 mr-2" min-width="250">
+       <v-row>
+<v-col>
+                <AreaChart />
+            </v-col>
+            <v-col>
+                <PieChart />
+            </v-col>
 
-                </v-card>
+       
+            <v-col>
+                <BarChart />
+            </v-col>
+            <v-col>
+                <LineChart />
+            </v-col>
+       
 
-            </v-row>
-            <v-row>
-                <v-card>
-                    <v-col>
-                        <BarChart />
-                    </v-col>
-                    <v-col>
-                        <LineChart />
-                    </v-col>
-
-                </v-card>
-
-            </v-row>
-        </v-row>
-
-    </v-container>
+       </v-row>
+            
+    </v-card>
 
 </div>
 </template>
@@ -65,3 +55,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#static-page {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+</style>

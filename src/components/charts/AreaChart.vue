@@ -62,7 +62,7 @@ export default {
           }
         ]
       },
-      { responsive: true, maintainAspectRatio: false,
+      { responsive: true, maintainAspectRatio: false,aspectRatio:2,
         title: {
           display: true,
           text: "Thống kê tình trạng đi học của học sinh"

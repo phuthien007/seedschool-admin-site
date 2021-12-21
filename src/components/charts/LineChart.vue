@@ -43,14 +43,14 @@ export default {
         datasets: [
           {
             label: "Thu",
-            data: [2, 10, 5, 9, 0, 6, 0],
+            data: [2, 10, 5, 9, 0, 6, 0,3,5,7,11,12],
             backgroundColor: "rgba(239, 59, 54, 0.7)",
             borderColor: "rgba(1, 116, 188, 0.50)",
             pointBackgroundColor: "blue"
           },
           {
             label: "Chi",
-            data: [10, 8, 4, 19, 10, 16, 20],
+            data: [10, 8, 4, 19, 10, 16, 20,4,6,20,11,21],
             backgroundColor: this.gradient2,
             borderColor: "rgba(1, 116, 188, 0.50)",
             pointBackgroundColor: "green"

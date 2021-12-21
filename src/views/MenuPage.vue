@@ -24,7 +24,7 @@
 
                     <template v-slot:activator="{ on, attrs }">
 
-                        <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition"  max-width="600">
+                        <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition" max-width="600">
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn color="primary" v-bind="attrs" v-on="on">Thêm món ăn</v-btn>
                             </template>
@@ -47,7 +47,6 @@
                             </template>
                         </v-dialog>
                     </template>
-
                 </v-menu>
             </v-toolbar>
         </v-sheet>
@@ -75,7 +74,7 @@ import {
 } from '../api/index'
 export default {
     data: () => ({
-        menuDay:{},
+        menuDay: null,
         value: [],
         options: [{
                 name: 'Vue.js',
@@ -93,6 +92,7 @@ export default {
         instancesOption: [],
         focus: '',
         type: 'day',
+        dateCur :    null,
         typeToLabel: {
             day: 'Day'
         },
@@ -101,7 +101,7 @@ export default {
         selectedOpen: false,
         events: [],
         colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-        names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+        foods: [],
     }),
     components: {
         Multiselect
@@ -110,7 +110,7 @@ export default {
         this.$refs.calendar.checkChange()
     },
     created: async function () {
-
+        this.getFoodByDate()
         // var arr = []
         let resp = await HTTP.get('food')
         if (resp.status == 200) {
@@ -124,8 +124,36 @@ export default {
         }
     },
     methods: {
-        addFood(){
-            window.location.reload()
+        addFood: async function () {
+            let listId = []
+            for (let id = 0; id < this.value.length; id += 1) {
+                listId.push(this.value[id].id)
+            }
+            var fm = new FormData()
+            fm.append('list',listId)
+            if (this.menuDay == null) {
+                let resCreate = await HTTP.post('menu/create',
+                    JSON.stringify({
+                        
+                            "date": this.dateCur,
+                            "name": 'string'
+                        
+                    })
+                )
+                if(resCreate.status == 200){
+                    this.menuDay = resCreate.data
+                }
+            }
+            let resp = await HTTP.put(`menu/add_foods/${this.menuDay.id}`,listId
+                // JSON.stringify({
+                //     "list": listId
+                // })
+            )
+            if (resp.status == 200) {
+                this.value = resp.data
+                this.updateRange()
+            }
+            // window.location.reload()
         },
         viewDay({
             date
@@ -165,35 +193,67 @@ export default {
 
             nativeEvent.stopPropagation()
         },
+        getFoodByDate: async function () {
+            if( this.dateCur == null)
+                this.dateCur = this.$refs.calendar.times.today.date
+            
+            try {
+                let resp = await HTTP.get(`menu/findMenu?date=${this.dateCur}`)
+                if (resp.status == 200) {
+                    this.menuDay = resp.data
+                    console.log('menu ' + this.menuDay)
+                    let resp1 = await HTTP.get(`menu/food_list?id=${this.menuDay.id}`)
+                    if (resp1.status == 200) {
+                        console.log('thành công lấy food')
+                        this.foods = resp1.data
+                        this.value = resp1.data
+                        console.log(this.foods[0].id)
+                    }
+                } else {
+                    console.log("looix")
+                    this.menuDay == null
+                }
+            } catch (error) {
+                if (error.message == "Request failed with status code 403") {
+                    window.localStorage.removeItem("token")
+                    window.location.reload()
+                } else {
+                    console.log(error)
+                }
+            }
+
+        },
         updateRange({
             start,
             end
         }) {
+            this.value = []
+            this.events = []
             const events = []
-
+            this.dateCur = start.date  
+            
+            this.getFoodByDate()
             const min = new Date(`${start.date}T11:00:00`)
             const max = new Date(`${end.date}T11:30:00`)
-            const days = (max.getTime() - min.getTime()) / 86400000
-            // số lượng món ăn trong ngày
-            const eventCount = this.rnd(days, days + 5)
 
             const firstTimestamp = this.rnd(min.getTime(), max.getTime())
             const first = new Date(firstTimestamp - (firstTimestamp % 900000))
             const secondTimestamp = this.rnd(new Date(`${start.date}T12:30:00`).getTime(), new Date(`${end.date}T13:00:00`).getTime())
             const second = new Date(secondTimestamp - (secondTimestamp % 900000))
             // thêm số món ăn vào items để hiển thị
-            for (let i = 0; i < eventCount; i++) {
+            console.log('food1' + this.foods)
+            for (let i = 0; i < this.foods.length; i++) {
 
                 const allDay = 1 === 0
                 events.push({
-                    name: this.names[this.rnd(0, this.names.length - 1)],
+                    name: this.foods[i].name,
                     start: first,
                     end: second,
                     color: this.colors[this.rnd(0, this.colors.length - 1)],
                     timed: !allDay,
                 })
                 events.push({
-                    name: this.names[this.rnd(0, this.names.length - 1)],
+                    name: this.foods[i].name,
                     start: first,
                     end: second,
                     color: this.colors[this.rnd(0, this.colors.length - 1)],
