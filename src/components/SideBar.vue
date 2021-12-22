@@ -1,5 +1,5 @@
 <template>
-<v-card height="100%">
+<div height="100%">
     <!-- <v-navigation-drawer permanent> -->
     <v-list-item>
         <v-list-item-content>
@@ -35,7 +35,7 @@
     </v-list>
     <!-- </v-navigation-drawer> -->
 
-</v-card>
+</div>
 </template>
 
 <script>

@@ -1,10 +1,9 @@
 <template>
 <div>
-      
     <v-row class="mx-auto mt-2">
             <!-- danh sách người dùng  -->
         <v-col>
-            <v-card class="mx-auto" min-width="200" outlined>
+            <v-card class="mx-auto" min-width="250" outlined>
                 <v-list-item three-line>
                     <v-list-item-content>
                         <div class="mb-4">
@@ -24,7 +23,7 @@
 
         <!-- danh sách học sinh -->
         <v-col>
-            <v-card class="mx-auto" min-width="200" outlined>
+            <v-card class="mx-auto" min-width="250" outlined>
                 <v-list-item three-line>
                     <v-list-item-content>
                         <div class="mb-4">
@@ -44,7 +43,7 @@
 
         <!-- danh sách học sinh  -->
         <v-col>
-            <v-card class="mx-auto" min-width="200" outlined>
+            <v-card class="mx-auto" min-width="250" outlined>
                 <v-list-item three-line>
                     <v-list-item-content>
                         <div class="mb-4">
@@ -64,7 +63,7 @@
 
         <!-- số người truy cập website trong tháng -->
         <v-col>
-            <v-card class="mx-auto" min-width="200"  outlined>
+            <v-card class="mx-auto" min-width="250"  outlined>
                 <v-list-item three-line>
                     <v-list-item-content>
                         <div class="mb-4">
