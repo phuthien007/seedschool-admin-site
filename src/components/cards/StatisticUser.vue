@@ -9,7 +9,7 @@
                         <div class="mb-4">
                             Tài khoản
                         </div>
-                        <v-list-item>10</v-list-item>
+                        <v-list-item>{{data[0]}}</v-list-item>
                         <v-list-item-subtitle>Số lượng tài khoản</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-avatar tile color="red"> 
@@ -29,7 +29,7 @@
                         <div class="mb-4">
                             Giáo viên
                         </div>
-                        <v-list-item>10</v-list-item>
+                        <v-list-item>{{data[1]}}</v-list-item>
                         <v-list-item-subtitle>Số lượng giáo viên</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-avatar tile color="yellow">
@@ -49,7 +49,7 @@
                         <div class="mb-4">
                             Học sinh
                         </div>
-                        <v-list-item>10</v-list-item>
+                        <v-list-item>{{data[2]}}</v-list-item>
                         <v-list-item-subtitle>Số lượng học sinh</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-avatar tile color="green">
@@ -69,7 +69,7 @@
                         <div class="mb-4">
                             Website
                         </div>
-                        <v-list-item>10</v-list-item>
+                        <v-list-item>{{data[3]}}</v-list-item>
                         <v-list-item-subtitle>Truy cập website</v-list-item-subtitle>
                     </v-list-item-content>
                     <v-avatar tile color="red">
@@ -87,6 +87,9 @@
 
 <script>
 export default {
-    name: "static-user"
+    name: "static-user",
+    props:{
+        data: Array
+    }
 }
 </script>

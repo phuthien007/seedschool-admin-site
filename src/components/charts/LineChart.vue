@@ -6,7 +6,7 @@ export default {
   data() {
     return {
       gradient: null,
-      gradient2: null
+      gradient2: null,
     };
   },
   mounted() {

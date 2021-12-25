@@ -7,7 +7,12 @@ export default {
     return {
       gradient: null,
       gradient2: null
+      
     };
+  },
+  
+  props:{
+    data:Array
   },
   mounted() {
     this.gradient = this.$refs.canvas
@@ -49,7 +54,7 @@ export default {
             borderWidth: 1,
             pointBorderColor: "white",
             backgroundColor: this.gradient,
-            data: [3,1,2,0,0,0,1,4,5,0,3,21]
+            data: this.data[0]
           },
           {
             label: "Học sinh đi học",
@@ -58,7 +63,7 @@ export default {
             pointBorderColor: "aqua",
             borderWidth: 1,
             backgroundColor: this.gradient2,
-            data: [47,49,48,50,50,50,49,46,45,50,47,29]
+            data: this.data[1]
           }
         ]
       },

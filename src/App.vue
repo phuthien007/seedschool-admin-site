@@ -9,9 +9,9 @@
         <side-bar />
     </v-navigation-drawer>
 
-    <v-app-bar class="ml-2 mx-auto" app elevation="3">
+    <v-app-bar class="ml-2 mx-auto mr-4" app elevation="3">
         <!-- -->
-        <div class="d-none d-sm-flex justify-space-between text-h4 ">
+        <div class="d-none d-sm-flex justify-space-between text-h5 ">
             Trường mầm non Seedschool
         </div>
         <div class="d-flex d-sm-none justify-space-between  text-body-2">

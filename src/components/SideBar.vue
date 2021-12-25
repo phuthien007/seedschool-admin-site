@@ -4,9 +4,7 @@
     <v-list-item>
         <v-list-item-content>
             <v-img lazy-src="../assets/logo-pc.png" max-height="150" max-width="250" src="../assets/logo-pc.png"></v-img>
-            <v-list-item-title class="text-center text-h6 pt-6">
-                Trang quản lý
-            </v-list-item-title>
+          
         </v-list-item-content>
     </v-list-item>
 
