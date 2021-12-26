@@ -310,12 +310,95 @@
             </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="editItem(item)">
-                mdi-pencil
-            </v-icon>
-            <v-icon small v-if="getIndexList() != 5" @click="deleteItem(item)">
-                mdi-delete
-            </v-icon>
+
+            <template>
+                <v-row justify="center" >
+                    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+                        <template v-slot:activator="{ on, attrs }">
+
+                            <v-tooltip bottom v-bind="attrs" v-on="on">
+                                <template  v-slot:activator="{ on, attrs }">
+                                    <v-icon @click="dialog = true"  v-bind="attrs" v-on="on" v-show="getName() == 'class'" small>
+                                        mdi-animation
+                                    </v-icon>
+                                </template>
+                                <span>Xem chi tiết</span>
+                            </v-tooltip>
+                        </template>
+                        <v-card>
+                            <v-toolbar dark color="primary">
+                                <v-btn icon dark @click="dialog = false">
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+                                <v-toolbar-title>Thông tin lớp học</v-toolbar-title>
+                                <v-spacer></v-spacer>
+                                <v-toolbar-items>
+                                    <v-btn dark text @click="dialog = false">
+                                        Save
+                                    </v-btn>
+                                </v-toolbar-items>
+                            </v-toolbar>
+                            <v-list three-line subheader>
+                                <v-subheader>Giáo viên quản lý lớp</v-subheader>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title>Giáo viên thứ nhất</v-list-item-title>
+                                        <v-list-item-subtitle>Thông tin cơ bản</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title>Giáo viên thứ 2</v-list-item-title>
+                                        <v-list-item-subtitle>Thông tin cơ bản</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                            <v-divider></v-divider>
+                            <v-list three-line subheader>
+                                <v-subheader>Danh sách học sinh</v-subheader>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title>Học sinh 1</v-list-item-title>
+                                        <v-list-item-subtitle>Thông tin học sinh thứ nhất</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title>Học sinh 2</v-list-item-title>
+                                        <v-list-item-subtitle>Thông tin học sinh thứ 2</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <v-list-item-title>Học sinh 3</v-list-item-title>
+                                        <v-list-item-subtitle>Thông tin học sinh thứ 3</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                        </v-card>
+                    </v-dialog>
+                </v-row>
+            </template>
+
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+
+                    <v-icon v-bind="attrs" v-on="on" small class="mr-2" @click="editItem(item)">
+                        mdi-pencil
+                    </v-icon>
+
+                </template>
+                <span>Chỉnh sửa</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+
+                    <v-icon small v-bind="attrs" v-on="on" v-if="getIndexList() != 5" @click="deleteItem(item)">
+                        mdi-delete
+                    </v-icon>
+                </template>
+                <span>Xóa</span>
+            </v-tooltip>
 
         </template>
         <template v-slot:no-data>
@@ -515,8 +598,7 @@ export default {
 
         desserts: [],
         editedIndex: -1,
-        editedItem: [
-            {
+        editedItem: [{
                 "account": {
                     "email": "",
                     "username": ""
@@ -544,7 +626,7 @@ export default {
                 "name": "",
                 "phoneNumber": "",
                 "schoolDay": "",
-               "urlImage": ""
+                "urlImage": ""
             },
             {
                 "name": "",
@@ -692,6 +774,7 @@ export default {
     },
 
     methods: {
+
         autoCreateAccount: async function () {
             try {
                 this.overlay = true
@@ -751,7 +834,6 @@ export default {
                     this.overlay = false
                 }, 1000)
                 this.desserts = resp.data;
-                console.log(this.desserts)
                 if (this.desserts == '') {
                     this.errorGetData.message = "Không có dữ liệu";
                     this.errorGetData.status = "warning";
