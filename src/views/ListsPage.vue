@@ -312,13 +312,13 @@
         <template v-slot:[`item.actions`]="{ item }">
 
             <template>
-                <v-row justify="center" >
-                    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+                <v-row justify="center">
+                    <v-dialog v-model="dialog1" fullscreen hide-overlay transition="dialog-bottom-transition">
                         <template v-slot:activator="{ on, attrs }">
 
                             <v-tooltip bottom v-bind="attrs" v-on="on">
-                                <template  v-slot:activator="{ on, attrs }">
-                                    <v-icon @click="dialog = true"  v-bind="attrs" v-on="on" v-show="getName() == 'class'" small>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon @click="dialog1 = true" v-bind="attrs" v-on="on" v-show="getName() == 'class'" small>
                                         mdi-animation
                                     </v-icon>
                                 </template>
@@ -327,13 +327,13 @@
                         </template>
                         <v-card>
                             <v-toolbar dark color="primary">
-                                <v-btn icon dark @click="dialog = false">
+                                <v-btn icon dark @click="dialog1 = false">
                                     <v-icon>mdi-close</v-icon>
                                 </v-btn>
                                 <v-toolbar-title>Thông tin lớp học</v-toolbar-title>
                                 <v-spacer></v-spacer>
                                 <v-toolbar-items>
-                                    <v-btn dark text @click="dialog = false">
+                                    <v-btn dark text @click="dialog1 = false">
                                         Save
                                     </v-btn>
                                 </v-toolbar-items>
@@ -441,6 +441,7 @@ export default {
         menu: false,
         categoryList: ['Danh sách giáo viên', 'Danh sách học sinh', 'Danh sách lớp học', 'Danh sách hoạt động', 'Danh sách món ăn', "Danh sách tài khoản"],
         valueSelected: 'Danh sách giáo viên',
+        dialog1: false,
         dialog: false,
         dialogDelete: false,
         headers: [

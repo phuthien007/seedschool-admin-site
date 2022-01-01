@@ -7,9 +7,9 @@
     </transition>
     <form id="formLogin">
         <h1>Đăng nhập trang quản lý</h1>
-        <v-text-field v-model="username" :error-messages="usernameErrors" label="Tên đăng nhập" required @input="$v.username.$touch()" @blur="$v.username.$touch()"></v-text-field>
-        <v-text-field type="password" v-model="password" :error-messages="passwordErrors" label="Mật khẩu" required @input="$v.password.$touch()" @blur="$v.password.$touch()"></v-text-field>
-        <v-btn class="mr-4" @click="submit(username, password)" color="primary">
+        <v-text-field v-model="username" @keyup.enter="submit(username, password)" :error-messages="usernameErrors" label="Tên đăng nhập" required @input="$v.username.$touch()" @blur="$v.username.$touch()"></v-text-field>
+        <v-text-field type="password" @keyup.enter="submit(username, password)" v-model="password" :error-messages="passwordErrors" label="Mật khẩu" required @input="$v.password.$touch()" @blur="$v.password.$touch()"></v-text-field>
+        <v-btn class="mr-4"  @click="submit(username, password)" color="primary">
             Đăng nhập
         </v-btn>
     </form>

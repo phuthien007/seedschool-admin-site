@@ -28,17 +28,19 @@
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-menu bottom right>
-
                         <template v-slot:activator="{ on, attrs }">
 
                             <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition" max-width="600">
                                 <template v-slot:activator="{ on, attrs }">
-                                    <v-btn color="primary" v-bind="attrs" v-on="on">Thêm món ăn</v-btn>
+                                    <v-btn color="primary" @click="added = true" v-bind="attrs" v-on="on">Thêm món ăn</v-btn>
+                                    <v-btn class="mr-2" @click="added = false" v-show="hasDay" color="error" v-bind="attrs" v-on="on">Xóa menu</v-btn>
                                 </template>
+
                                 <template v-slot:default="dialog">
                                     <v-card>
-                                        <v-toolbar color="primary" dark>Thêm món ăn</v-toolbar>
-                                        <div class="mt-4">
+                                        <v-toolbar color="primary" v-show="added" dark>Thêm món ăn</v-toolbar>
+                                        <v-toolbar color="primary" v-show="!added"  dark>Xóa Menu</v-toolbar>
+                                        <div v-show="added" class="mt-4">
                                             <multiselect v-model="value" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Pick some" label="name" track-by="name" :preselect-first="false">
                                                 <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                                             </multiselect>
@@ -46,12 +48,15 @@
                                         </div>
 
                                         <v-card-actions class="justify-end">
-                                            <v-btn text @click="addFood">Thêm</v-btn>
+                                            <v-btn text v-show="!added" @click="deleteMenu(); dialog.value = false">Xóa</v-btn>
+                                            <v-btn text v-show="added" @click="addFood">Thêm</v-btn>
                                             <v-spacer></v-spacer>
                                             <v-btn text @click="dialog.value = false">Đóng</v-btn>
                                         </v-card-actions>
                                     </v-card>
+
                                 </template>
+
                             </v-dialog>
                         </template>
                     </v-menu>
@@ -82,11 +87,13 @@ import {
 } from '../api/index'
 export default {
     data: () => ({
+        added: false,
         errorGetData: {
             "message": "",
             "status": ""
         },
         menuDay: null,
+        hasDay:false,
         value: [],
         options: [],
         instancesOption: [],
@@ -120,6 +127,30 @@ export default {
         await this.resetMenu()
     },
     methods: {
+        async deleteMenu() {
+            try {
+                let resp = await HTTP.delete(`menu/${this.menuDay.id}`)
+                if (resp.status == 200) {
+                    this.errorGetData.status = "success"
+                    this.errorGetData.message = "Xóa thành công"
+                } else {
+
+                    this.errorGetData.status = "error"
+                    this.errorGetData.message = "Xóa không thành công, đã xảy ra lỗi"
+                }
+                this.resetMenu()
+
+            } catch (error) {
+                this.errorGetData.status = "error"
+                this.errorGetData.message = "Xóa không thành công, đã xảy ra lỗi"
+            }
+
+            setTimeout(() => {
+                this.errorGetData.status = ''
+                this.errorGetData.message = ''
+            }, 1000)
+
+        },
         resetAlert() {
             setTimeout(() => {
                 this.errorGetData.message = ''
@@ -143,21 +174,14 @@ export default {
 
             for (let i = 0; i < this.foods.length; i++) {
 
-                const allDay = 1 === 0
                 events.push({
                     name: this.foods[i].name,
                     start: first,
                     end: second,
                     color: this.colors[this.rnd(0, this.colors.length - 1)],
-                    timed: !allDay,
+                    timed: 1,
                 })
-                events.push({
-                    name: this.foods[i].name,
-                    start: first,
-                    end: second,
-                    color: this.colors[this.rnd(0, this.colors.length - 1)],
-                    timed: allDay,
-                })
+
             }
 
             this.events = events
@@ -176,7 +200,7 @@ export default {
                         JSON.stringify({
 
                             "date": this.dateCur,
-                            "name": `${this.menuDay}`
+                            "name": `${this.getNameDate(new Date(this.dateCur).getDay())}`
 
                         })
                     )
@@ -184,6 +208,7 @@ export default {
 
                 if (resp.status == 200) {
                     this.menuDay = resp.data
+                    this.hasDay = true 
                 }
 
                 let resp1 = await HTTP.put(`menu/add_foods/${this.menuDay.id}`, listId)
@@ -195,6 +220,7 @@ export default {
                     this.resetAlert()
                 }
             } catch (error) {
+                
                 this.errorGetData.message = "Đã có lỗi xảy ra, vui lòng thử lại sau"
                 this.errorGetData.status = 'error'
                 console.log(error)
@@ -226,7 +252,7 @@ export default {
                     day_name = "Thứ năm";
                     break;
                 case 5:
-                    day_name = "Thứ sau";
+                    day_name = "Thứ sáu";
                     break;
                 case 6:
                     day_name = "Thứ bảy";
@@ -281,6 +307,7 @@ export default {
                 let resp = await HTTP.get(`menu/findMenu?date=${this.dateCur}`)
                 if (resp.status == 200) {
                     this.menuDay = resp.data
+                    this.hasDay = true
                     let resp1 = await HTTP.get(`menu/food_list?id=${this.menuDay.id}`)
                     if (resp1.status == 200) {
                         this.foods = resp1.data
@@ -292,6 +319,7 @@ export default {
 
                 } else {
                     this.menuDay == null
+                    this.hasDay = false
                 }
             } catch (error) {
                 if (error.message == "Request failed with status code 403") {
@@ -318,10 +346,8 @@ export default {
             this.events = []
             const events = []
             this.dateCur = start.date
-
             await this.getFoodByDate()
 
-            console.log('food : ' + this.foods)
             const min = new Date(`${start.date}T11:00:00`)
             const max = new Date(`${end.date}T11:30:00`)
             this.nameDate = this.getNameDate(min.getDay())
@@ -333,20 +359,12 @@ export default {
 
             for (let i = 0; i < this.foods.length; i++) {
 
-                const allDay = 1 === 0
                 events.push({
                     name: this.foods[i].name,
                     start: first,
                     end: second,
                     color: this.colors[this.rnd(0, this.colors.length - 1)],
-                    timed: !allDay,
-                })
-                events.push({
-                    name: this.foods[i].name,
-                    start: first,
-                    end: second,
-                    color: this.colors[this.rnd(0, this.colors.length - 1)],
-                    timed: allDay,
+                    timed: 1,
                 })
             }
 

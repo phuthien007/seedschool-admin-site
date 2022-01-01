@@ -144,14 +144,15 @@
                     <v-toolbar :color="selectedEvent.color" dark>
                         <v-btn icon @click="edited = true">
                             <v-icon>mdi-pencil</v-icon>
+
                         </v-btn>
                         <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
+
                     <v-card-text>
                         <template>
                             <div>
-
                                 <v-text-field :disabled="!edited" v-if="selectedEvent.data != null" label="Đối tượng áp dụng" v-model="selectedEvent.data.applicableObject" :rules="rules" hide-details="auto"></v-text-field>
                                 <v-text-field :disabled="!edited" v-if="selectedEvent.data != null" label="Tên hoạt động" v-model="selectedEvent.data.nameActivity"></v-text-field>
                                 <v-text-field :disabled="!edited" v-if="selectedEvent.data != null" label="Điều kiện tham dự" v-model="selectedEvent.data.condition"></v-text-field>
@@ -169,12 +170,11 @@
                                                 <template v-slot:default="dialog">
                                                     <v-card>
                                                         <v-row>
+
                                                             <v-col justify="center">
                                                                 <v-date-picker v-model="picker1"></v-date-picker>
                                                             </v-col>
-                                                            <!-- <v-col>
-                                                                <v-time-picker v-model="picker2"></v-time-picker>
-                                                            </v-col> -->
+
                                                         </v-row>
                                                         <v-card-actions class="justify-end">
                                                             <v-btn text @click="dialog.value = false;">Xong</v-btn>
@@ -216,6 +216,36 @@
                         <v-btn v-show="edited" text @click="saveActivity(selectedEvent)">
                             Lưu
                         </v-btn>
+                        <template>
+                            <div class="text-center">
+                                <v-dialog v-model="dialog" width="500">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on" v-show="!edited" text>
+                                            Xóa
+                                        </v-btn>
+                                    </template>
+
+                                    <v-card>
+                                        <v-card-title class="text-h5 grey lighten-2">
+                                            Xóa hoạt động
+                                        </v-card-title>
+
+                                        <v-divider></v-divider>
+
+                                        <v-card-actions>
+                                            <v-btn color="primary" text @click="dialog = false">
+                                                Thoát
+                                            </v-btn>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="primary" text @click="deleteActivity(selectedEvent)">
+                                                Đồng ý
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+                            </div>
+                        </template>
+
                     </v-card-actions>
                 </v-card>
             </v-menu>
@@ -230,6 +260,7 @@ import {
 } from '../api'
 export default {
     data: () => ({
+        dialog: false,
         item: {
             "applicableObject": "",
             "condition": "",
@@ -270,6 +301,7 @@ export default {
         names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
     }),
     async mounted() {
+        this.edited = false
         this.$refs.calendar.checkChange()
         this.curMonth = this.$refs.calendar.times.now.month - 1
         await this.updateItems()
@@ -277,14 +309,15 @@ export default {
     methods: {
         saveNew: async function () {
             try {
-                this.item.startDate = this.newpicker1 + 'T' + this.newpicker2 + ':00'
+                this.item.startDate = new Date(this.newpicker1 + 'T' + this.newpicker2 + ':00')
+               
                 this.overlay = true
                 let resp = await HTTP.post(`activity/`, this.item)
                 setTimeout(() => {
                     this.overlay = false
                 }, 1000)
                 if (resp.status == 200) {
-                    console.log('success')
+                  
                     this.edited = false
                     this.errorGetData.message = "Tạo mới thành công"
                     this.errorGetData.status = 'success'
@@ -313,6 +346,7 @@ export default {
             }, 1000)
         },
         resetItem() {
+            this.edited = false
             this.item = {
                 "applicableObject": "",
                 "condition": "",
@@ -327,7 +361,8 @@ export default {
         },
         async saveActivity(item) {
             try {
-                item.data.startDate = this.picker1 + 'T' + this.picker2 + ':00'
+                item.data.startDate = new Date(this.picker1 + 'T' + this.picker2 + ':00')
+                console.log(item.data.startDate)
                 this.overlay = true
                 let resp = await HTTP.put(`activity/${item.data.id}`, item.data)
                 this.overlay = false
@@ -349,6 +384,31 @@ export default {
                 this.errorGetData.message = ''
             }, 1000)
 
+        },
+        async deleteActivity(item) {
+            try {
+
+                this.overlay = true
+                let resp = await HTTP.delete(`activity/${item.data.id}`)
+                this.overlay = false
+                if (resp.status == 200) {
+                    console.log('success')
+                    this.edited = false
+                    this.errorGetData.message = "Xóa  thành công"
+                    this.errorGetData.status = 'success'
+                    this.events.splice(this.events.indexOf(item), 1)
+                }
+
+            } catch (error) {
+                console.log(error)
+                this.errorGetData.message = "Có lỗi đã xảy ra"
+                this.errorGetData.status = 'error'
+            }
+            this.dialog = false
+            setTimeout(() => {
+                this.errorGetData.status = ''
+                this.errorGetData.message = ''
+            }, 1000)
         },
         viewDay({
             date
@@ -372,11 +432,12 @@ export default {
             nativeEvent,
             event
         }) {
-
+            this.edited = false
             try {
+
                 this.picker1 = event.data.startDate.split('T')[0]
                 this.picker2 = event.data.startDate.split('T')[1].split(':')[0] + ':' + event.data.startDate.split('T')[1].split(':')[1]
-                console.log(this.picker2)
+
             } catch (error) {
                 console.log(error)
 
@@ -384,12 +445,14 @@ export default {
                 this.picker2 = null
             }
             const open = () => {
+                this.edited = false
                 this.selectedEvent = event
                 this.selectedElement = nativeEvent.target
                 requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
             }
 
             if (this.selectedOpen) {
+                this.edited = false
                 this.selectedOpen = false
                 requestAnimationFrame(() => requestAnimationFrame(() => open()))
             } else {
@@ -401,6 +464,7 @@ export default {
         async updateRange({
             start
         }) {
+            this.edited = false
             if (start.month != this.curMonth + 1) {
 
                 await this.updateItems()
@@ -414,37 +478,47 @@ export default {
             try {
                 var date = new Date()
                 const monthCur = date.getMonth()
-                const events = []
                 this.overlay = true
-                for (let i = 2; i < 33; i++) {
+                for (let i = 1; i < 33; i++) {
                     var firstDay = new Date(date.getFullYear(), date.getMonth(), i);
+                    let day = `${firstDay.getFullYear()}-`
+                        
 
                     if (firstDay.getMonth() == monthCur) {
-                        let date = firstDay.toISOString().split('T')[0]
-                        let resp = await HTTP.get(`activity/search_start_date?startDate=${date}`)
+                        
+                        if (firstDay.getMonth()+1 < 10){
+                            day = day +`0${firstDay.getMonth()+1}-`
+                        } else{
+                            day = day +`${firstDay.getMonth()+1}-`
+                        }
+                        if (firstDay.getDate() < 10) {
+                            day = day + `0${firstDay.getDate()}`
+                        } else {
+                            day = day + `${firstDay.getDate()}`
+                        }
+
+                        let resp = await HTTP.get(`activity/search_start_date?startDate=${day}`)
                         if (resp.status == 200) {
                             let data = resp.data
                             for (let i = 0; i < data.length; i++) {
-                                const allDay = this.rnd(0, 1) === 0
                                 const first = new Date(`${data[i].startDate}`)
                                 const second = new Date(`${data[i].startDate.split('T')[0]}T10:00:00.000Z`)
+                                var __FOUND = this.events.find(function (post) {
+                                    if (post.id == data[i].id)
+                                        return true;
+                                })
+                                if (__FOUND != true) {
+                                    this.events.push({
+                                        id: data[i].id,
+                                        data: data[i],
+                                        name: data[i].nameActivity,
+                                        start: first,
+                                        end: second,
+                                        color: this.colors[this.rnd(0, this.colors.length - 1)],
+                                        timed: 1,
+                                    })
+                                }
 
-                                events.push({
-                                    // data:data[i],
-                                    name: data[i].nameActivity,
-                                    start: first,
-                                    end: second,
-                                    color: this.colors[this.rnd(0, this.colors.length - 1)],
-                                    timed: !allDay,
-                                })
-                                events.push({
-                                    data: data[i],
-                                    name: data[i].nameActivity,
-                                    start: first,
-                                    end: second,
-                                    color: this.colors[this.rnd(0, this.colors.length - 1)],
-                                    timed: allDay,
-                                })
                             }
 
                         }
@@ -455,7 +529,6 @@ export default {
                 setTimeout(() => {
                     this.overlay = false
                 }, 1000)
-                this.events = events
             } catch (error) {
                 setTimeout(() => {
                     this.overlay = false
@@ -467,12 +540,12 @@ export default {
                     window.location.reload()
                     this.resetAlert()
                 } else {
-                    this.errorGetData.message = "Có lỗi đã xảy ra, không thể lưu lại thay đổi"
+                    this.errorGetData.message = "Có lỗi đã xảy ra"
                     this.errorGetData.status = 'error'
                 }
             }
 
-             setTimeout(() => {
+            setTimeout(() => {
                 this.errorGetData.status = ''
                 this.errorGetData.message = ''
             }, 1000)
