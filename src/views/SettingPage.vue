@@ -20,27 +20,201 @@
                 </h1>
             </v-card-title>
 
-            <v-tabs v-model="tab" background-color="transparent" color="basil" grow >
-                <v-tab v-for="item in tabItems" :key="item.id">
-                    {{ item }}
+            <v-tabs v-model="tab" background-color="transparent" color="basil" grow>
+                <v-tab @click="handleData(item.key)" v-for="item in tabItems" :key="item.key">
+                    {{ item.key }}
                 </v-tab>
             </v-tabs>
-
+            <v-overlay :value="overlay">
+                <v-progress-circular indeterminate color="blue" size="45"></v-progress-circular>
+            </v-overlay>
+            <transition name="slide-fade">
+                <v-alert :type="errorGetData.status" v-if="errorGetData.message != ''">
+                    {{errorGetData.message}}
+                </v-alert>
+            </transition>
             <v-tabs-items v-model="tab">
-                <v-tab-item v-for="item in tabItems" :key="item">
+                <v-tab-item key="All">
                     <v-card color="basil" flat>
                         <template>
-                            <v-data-table  :headers="dessertHeaders" :items="desserts" :single-expand="singleExpand" :expanded.sync="expanded" item-key="name" show-expand class="elevation-5">
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[0].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5">
                                 <template v-slot:top>
                                     <v-toolbar flat>
+                                        <v-switch v-model="singleSelect" label="Single select" class="pa-3"></v-switch>
                                         <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
                                         <v-spacer></v-spacer>
+                                        <v-menu bottom right>
+                                            <template v-slot:activator="{ on, attrs }">
+
+                                                <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition" max-width="600">
+                                                    <template v-slot:activator="{ on, attrs }">
+
+                                                        <v-btn color="red" dark class="mr-2" v-bind="attrs" v-on="on">Xóa</v-btn>
+
+                                                    </template>
+
+                                                    <template v-slot:default="dialog">
+                                                        <v-card>
+                                                            <v-card-actions class="justify-end">
+                                                                <v-btn color="red" text @click="deleteFunc(); dialog.value = false">Đồng ý</v-btn>
+
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn text @click="dialog.value = false">Đóng</v-btn>
+                                                            </v-card-actions>
+                                                        </v-card>
+
+                                                    </template>
+
+                                                </v-dialog>
+                                            </template>
+                                        </v-menu>
                                         <v-switch v-model="singleExpand" label="Single expand" class="mt-2"></v-switch>
                                     </v-toolbar>
                                 </template>
                                 <template v-slot:expanded-item="{ headers, item }">
                                     <td :colspan="headers.length">
-                                        More info about {{ item.detail }}
+                                        {{ item.detail }}
+                                    </td>
+                                </template>
+                                <!-- <template v-slot:[`item.description`]="{ item }">
+                                    <v-simple-checkbox v-model="item.description" ></v-simple-checkbox>
+                                </template> -->
+                            </v-data-table>
+                        </template>
+                    </v-card>
+                </v-tab-item>
+
+                <v-tab-item key="Process">
+                    <v-card color="basil" flat>
+                        <template>
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[1].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5"> <template v-slot:top>
+                                    <v-toolbar flat>
+                                        <!-- <v-switch v-model="singleSelect" label="Single select" class="pa-3"></v-switch> -->
+                                        <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
+                                        <v-spacer></v-spacer>
+                                        <v-menu bottom right>
+                                            <template v-slot:activator="{ on, attrs }">
+
+                                                <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition" max-width="600">
+                                                    <template v-slot:activator="{ on, attrs }">
+
+                                                        <v-btn color="red" dark class="mr-2" v-bind="attrs" v-on="on">Xóa</v-btn>
+
+                                                    </template>
+
+                                                    <template v-slot:default="dialog">
+                                                        <v-card>
+                                                            <v-card-actions class="justify-end">
+                                                                <v-btn color="red" text @click="deleteFunc(); dialog.value = false">Đồng ý</v-btn>
+
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn text @click="dialog.value = false">Đóng</v-btn>
+                                                            </v-card-actions>
+                                                        </v-card>
+
+                                                    </template>
+
+                                                </v-dialog>
+                                            </template>
+                                        </v-menu>
+                                        <v-switch v-model="singleExpand" label="Single expand" class="mt-2"></v-switch>
+                                    </v-toolbar>
+                                </template>
+                                <template v-slot:expanded-item="{ headers, item }">
+                                    <td :colspan="headers.length">
+                                        {{ item.detail }}
+                                    </td>
+                                </template>
+                            </v-data-table>
+                        </template>
+                    </v-card>
+                </v-tab-item>
+
+                <v-tab-item key="Pending">
+                    <v-card color="basil" flat>
+                        <template>
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[2].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5"> <template v-slot:top>
+                                    <v-toolbar flat>
+                                        <v-switch v-model="singleSelect" label="Single select" class="pa-3"></v-switch>
+                                        <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
+                                        <v-spacer></v-spacer>
+                                        <v-btn class="mr-2" @click="changeToDone()" color="primary">Chấp nhận</v-btn>
+                                        <v-menu bottom right>
+                                            <template v-slot:activator="{ on, attrs }">
+
+                                                <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition" max-width="600">
+                                                    <template v-slot:activator="{ on, attrs }">
+
+                                                        <v-btn color="red" dark class="mr-2" v-bind="attrs" v-on="on">Xóa</v-btn>
+
+                                                    </template>
+
+                                                    <template v-slot:default="dialog">
+                                                        <v-card>
+                                                            <v-card-actions class="justify-end">
+                                                                <v-btn color="red" text @click="deleteFunc(); dialog.value = false">Đồng ý</v-btn>
+
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn text @click="dialog.value = false">Đóng</v-btn>
+                                                            </v-card-actions>
+                                                        </v-card>
+
+                                                    </template>
+
+                                                </v-dialog>
+                                            </template>
+                                        </v-menu>
+                                        <v-switch v-model="singleExpand" label="Single expand" class="mt-2"></v-switch>
+                                    </v-toolbar>
+                                </template>
+                                <template v-slot:expanded-item="{ headers, item }">
+                                    <td :colspan="headers.length">
+                                        {{ item.detail }}
+                                    </td>
+                                </template>
+                            </v-data-table>
+                        </template>
+                    </v-card>
+                </v-tab-item>
+
+                <v-tab-item key="Done">
+                    <v-card color="basil" flat>
+                        <template>
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[3].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5"> <template v-slot:top>
+                                    <v-toolbar flat>
+                                        <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
+                                        <v-spacer></v-spacer>
+                                        <v-menu bottom right>
+                                            <template v-slot:activator="{ on, attrs }">
+
+                                                <v-dialog v-bind="attrs" v-on="on" transition="dialog-bottom-transition" max-width="600">
+                                                    <template v-slot:activator="{ on, attrs }">
+
+                                                        <v-btn color="red" dark class="mr-2" v-bind="attrs" v-on="on">Xóa</v-btn>
+
+                                                    </template>
+
+                                                    <template v-slot:default="dialog">
+                                                        <v-card>
+                                                            <v-card-actions class="justify-end">
+                                                                <v-btn color="red" text @click="deleteFunc(); dialog.value = false">Đồng ý</v-btn>
+
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn text @click="dialog.value = false">Đóng</v-btn>
+                                                            </v-card-actions>
+                                                        </v-card>
+
+                                                    </template>
+
+                                                </v-dialog>
+                                            </template>
+                                        </v-menu>
+                                        <v-switch v-model="singleExpand" label="Single expand" class="mt-2"></v-switch>
+                                    </v-toolbar>
+                                </template>
+                                <template v-slot:expanded-item="{ headers, item }">
+                                    <td :colspan="headers.length">
+                                        {{ item.detail }}
                                     </td>
                                 </template>
                             </v-data-table>
@@ -54,9 +228,20 @@
 </template>
 
 <script>
+import {
+    HTTP
+} from '../api/index'
 export default {
+
     data() {
         return {
+            errorGetData: {
+            "message": "",
+            "status": ""
+        },
+            overlay: false,
+            selected: [],
+            singleSelect: false,
             expanded: [],
             singleExpand: false,
             dessertHeaders: [{
@@ -66,7 +251,7 @@ export default {
                 },
                 {
                     text: 'Người đăng',
-                    value: 'account.username'
+                    value: 'accountDAO.username'
                 },
                 {
                     text: 'Mô tả',
@@ -74,134 +259,40 @@ export default {
                 },
                 {
                     text: 'Tên',
-                    value: 'name'
+                    value: 'title'
                 },
                 {
                     text: 'Trạng thái',
                     value: 'status'
                 },
                 {
+                    text: 'Hành động',
+                    value: ' actions',
+                    sortable: false
+                },
+                {
                     text: '',
                     value: 'data-table-expand'
                 },
             ],
-            desserts: [{
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name1',
-                    detail: 'detail1'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name2',
-                    detail: 'detail2'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name3',
-                    detail: 'detail3'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name4',
-                    detail: 'detail4'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name5',
-                    detail: 'detail5'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name6',
-                    detail: 'detail6'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name7',
-                    detail: 'detail7'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name8',
-                    detail: 'detail8'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name9',
-                    detail: 'detail9'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name10',
-                    detail: 'detail10'
-                },
-                {
-                    createDate: '2021-12-25',
-                    account: {
-                        username: 'admin'
-                    },
-                    description: 'mô tả',
-                    status: 'complete',
-                    name:'name11',
-                    detail: 'detail11'
-                },
-
-            ],
             tab: null,
-            tabItems: [
-                'All', 'Process', 'Pending', 'Done',
+            tabItems: [{
+                    key: 'All',
+                    data: []
+                },
+                {
+                    key: 'Process',
+                    data: []
+                },
+                {
+                    key: 'Pending',
+                    data: []
+                },
+                {
+                    key: 'Done',
+                    data: []
+                }
             ],
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
             image: null,
             urlImage: '',
             items: [{
@@ -219,7 +310,87 @@ export default {
             ],
         }
     },
+    mounted: async function () {
+        await this.handleData('ALL')
+    },
     methods: {
+        resetAlert() {
+            setTimeout(() => {
+                this.errorGetData.message = ''
+                this.errorGetData.status = ''
+            }, 1000)
+
+        },
+        changeToDone: async function () {
+            var err = ''
+            this.overlay = true
+            for (let index = 0; index < this.selected.length; index += 1) {
+                try {
+                    let resp = await HTTP.put(`article/${this.selected[index].id}?statusArticle=DONE`)
+                    if (resp.status == 200) {
+                        console.log('delete success')
+                        this.tabItems[this.tab].data.splice(this.selected[index], 1)
+                    } else {
+                        err += `Lỗi khi update bài viết có id: ${this.selected[index].id}\n`
+                    }
+                } catch (error) {
+                    console.log(error)
+                    err += `Lỗi khi update bài viết có id: ${this.selected[index].id}\n`
+                }
+            }
+            if (err == '') {
+                this.errorGetData.status = 'success'
+                this.errorGetData.message = 'Bài viết đã được chấp nhận'
+                this.selected = []
+            } else {
+                this.errorGetData.status = 'error'
+                this.errorGetData.message = err
+            }
+            setTimeout(()=>{
+                this.overlay = false 
+            }, 1000)
+            this.resetAlert()
+        },
+        deleteFunc: async function () {
+
+            var err = ''
+            this.overlay = true 
+            for (let index = 0; index < this.selected.length; index += 1) {
+                try {
+                    let resp = await HTTP.delete(`article/${this.selected[index].id}`)
+                    if (resp.status == 200) {
+                        console.log('delete success')
+                        this.tabItems[this.tab].data.splice(this.selected[index], 1)
+                        // this.events.splice(this.events.indexOf(item), 1)
+                    } else {
+                        err += `Lỗi khi xóa bài viết có id: ${this.selected[index].id}\n`
+                    }
+                } catch (error) {
+                    err += `Lỗi khi xóa bài viết có id: ${this.selected[index].id}\n`
+                }
+            }
+            if (err == '') {
+                this.errorGetData.status = 'success'
+                this.errorGetData.message = 'Xóa bài viết thành công'
+                this.selected = []
+            } else {
+                this.errorGetData.status = 'error'
+                this.errorGetData.message = err
+            }
+            setTimeout(()=>{
+                this.overlay = false 
+            }, 1000)
+            this.resetAlert()
+
+        },
+        async handleData(tab) {
+            this.overlay = true 
+            await this.getAllData(tab.toUpperCase())
+            setTimeout(() =>{
+                this.overlay = false 
+            }, 1000)
+        },
+
         onFileSelected(event) {
             this.image = event.target.files[0]
             this.urlImage = URL.createObjectURL(this.image)
@@ -241,6 +412,46 @@ export default {
             }
             this.urlImage = null
 
+        },
+        getIndexTab(key) {
+            if (key.toUpperCase() == 'PROCESS') {
+                return 1
+            } else if (key.toUpperCase() == 'PENDING') {
+                return 2
+            } else if (key.toUpperCase() == 'DONE') {
+                return 3
+            } else {
+                return 0
+            }
+        },
+        async getAllData(key) {
+            try {
+                if (key == 'ALL') {
+                    let resp = await HTTP.get(`article/`)
+                    if (resp.status == 200) {
+                        this.tabItems[0].data = resp.data
+                    }
+                } else {
+                    let resp = await HTTP.get(`article/search?statusArticle=${key.toUpperCase()}`)
+                    if (resp.status == 200) {
+                        this.tabItems[this.getIndexTab(key)].data = resp.data
+                    }
+                }
+
+            } catch (error) {
+                if (error.message == "Request failed with status code 403") {
+
+                    this.errorGetData.message = "Lỗi token hoặc không thể thực hiện chức năng này, hãy đăng nhập lại"
+                    this.errorGetData.status = "error"
+                    window.localStorage.removeItem("token")
+                    window.location.reload()
+                    this.resetAlert()
+
+                } else {
+                    this.errorGetData.message = `Lỗi lấy dữ liệu`;
+                    this.errorGetData.status = "error";
+                }
+            }
         },
     }
 }
