@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import DetailClass from '../components/DetailClass.vue'
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -77,6 +78,15 @@ const router = new VueRouter({
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/MenuPage.vue')
+  }
+  ,
+  {
+    path: '/admin/class/:id',
+    name: 'detail-class',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: DetailClass
   }
 ]})
 export default router;

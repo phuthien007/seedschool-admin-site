@@ -70,8 +70,12 @@ export default {
             this.data.push(0)
         }
 
-        this.data.push(10)
-        
+        resp = await HTTP.get('number_of_access/')
+        if (resp.status == 200){
+            this.data.push(resp.data)
+        } else{
+            this.data.push(0)
+        }        
         resp = await HTTP.get('statistic_student_absent')
         if (resp.status == 200) {
             const obj = resp.data

@@ -1,15 +1,15 @@
 <template>
-<div>
+<div :id="valueSelected">
     <v-overlay :value="overlay">
         <v-progress-circular indeterminate color="blue" size="45"></v-progress-circular>
     </v-overlay>
-    <v-select :items="categoryList" v-model="valueSelected" label="Chọn một danh sách"></v-select>
+    <v-select :id="valueSelected" :items="categoryList" v-model="valueSelected" label="Chọn một danh sách"></v-select>
     <transition name="slide-fade">
         <v-alert :type="errorGetData.status" v-if="errorGetData.message != ''">
             {{errorGetData.message}}
         </v-alert>
     </transition>
-    <v-data-table :headers="headers[getIndexList()]" :items="desserts" :search="search" :sort-desc="[false, true]" multi-sort class="elevation-2">
+    <v-data-table :id="valueSelected" :headers="headers[getIndexList()]" :items="desserts" :search="search" :sort-desc="[false, true]" multi-sort class="elevation-2">
 
         <template v-slot:top>
 
@@ -311,74 +311,17 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
 
-            <template>
-                <v-row justify="center">
-                    <v-dialog v-model="dialog1" fullscreen hide-overlay transition="dialog-bottom-transition">
-                        <template v-slot:activator="{ on, attrs }">
+            <v-tooltip bottom v-bind="attrs" v-on="on">
+                <template v-slot:activator="{ on, attrs }">
+                    <router-link nav-link :to="getLink(item.id)" >
+                        <v-icon class="mr-2" @click="dialog1 = true; getAllDataClass(item)" v-bind="attrs" v-on="on" v-show="getName() == 'class'" small>
+                            mdi-animation
+                        </v-icon>
+                    </router-link>
 
-                            <v-tooltip bottom v-bind="attrs" v-on="on">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon @click="dialog1 = true" v-bind="attrs" v-on="on" v-show="getName() == 'class'" small>
-                                        mdi-animation
-                                    </v-icon>
-                                </template>
-                                <span>Xem chi tiết</span>
-                            </v-tooltip>
-                        </template>
-                        <v-card>
-                            <v-toolbar dark color="primary">
-                                <v-btn icon dark @click="dialog1 = false">
-                                    <v-icon>mdi-close</v-icon>
-                                </v-btn>
-                                <v-toolbar-title>Thông tin lớp học</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-toolbar-items>
-                                    <v-btn dark text @click="dialog1 = false">
-                                        Save
-                                    </v-btn>
-                                </v-toolbar-items>
-                            </v-toolbar>
-                            <v-list three-line subheader>
-                                <v-subheader>Giáo viên quản lý lớp</v-subheader>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>Giáo viên thứ nhất</v-list-item-title>
-                                        <v-list-item-subtitle>Thông tin cơ bản</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>Giáo viên thứ 2</v-list-item-title>
-                                        <v-list-item-subtitle>Thông tin cơ bản</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list>
-                            <v-divider></v-divider>
-                            <v-list three-line subheader>
-                                <v-subheader>Danh sách học sinh</v-subheader>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>Học sinh 1</v-list-item-title>
-                                        <v-list-item-subtitle>Thông tin học sinh thứ nhất</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>Học sinh 2</v-list-item-title>
-                                        <v-list-item-subtitle>Thông tin học sinh thứ 2</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>Học sinh 3</v-list-item-title>
-                                        <v-list-item-subtitle>Thông tin học sinh thứ 3</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-list>
-                        </v-card>
-                    </v-dialog>
-                </v-row>
-            </template>
+                </template>
+                <span>Xem chi tiết</span>
+            </v-tooltip>
 
             <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -418,6 +361,8 @@ export default {
     name: "list-page",
 
     data: () => ({
+       
+        show: false,
         overlay: false,
         showAutoCreate: false,
         itemRoles: [
@@ -775,7 +720,10 @@ export default {
     },
 
     methods: {
-
+        getLink(id){
+            return `/admin/class/${id}`
+        },
+        
         autoCreateAccount: async function () {
             try {
                 this.overlay = true
@@ -1156,5 +1104,9 @@ export default {
 #preview img {
     max-width: 100%;
     max-height: 500px;
+}
+
+.nav-link {
+    text-decoration: none;
 }
 </style>

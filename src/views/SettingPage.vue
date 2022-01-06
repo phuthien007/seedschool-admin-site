@@ -2,13 +2,40 @@
 <div>
     <h1>Ảnh trình chiếu trong trang người dùng</h1>
     <v-carousel cycle height="400" hide-delimiter-background>
-        <v-carousel-item v-for="(item,i) in items" :key="i" :src="item.src"></v-carousel-item>
-    </v-carousel>
+        <v-carousel-item v-for="(item,i) in items" :key="i" :src="item.urlImage">
+            <div style="display:none;">
+                {{ imageCurrentShow = item }}
+            </div>
 
+        </v-carousel-item>
+    </v-carousel>
     <div class="mt-2">
         <input type="file" ref="fileupload" @change="onFileSelected" accept="image/*">
+        <v-btn color="primary" dark @click="addItem()">Thêm ảnh</v-btn>
 
-        <v-btn color="primary" @click="addItem()">Thêm ảnh</v-btn>
+        <v-dialog v-model="dialog">
+            <template v-slot:activator="{ on, attrs }">
+                <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on" class="ml-2">
+                    Xóa ảnh hiện tại
+                </v-btn>
+            </template>
+
+            <v-card>
+                <v-card-title class="text-h5 grey lighten-2">
+                    Xóa ảnh hiện tại
+                </v-card-title>
+                <v-card-actions>
+                    <v-btn color="primary" text @click="dialog = false">
+                        Đóng
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="error" text @click="deleteImage(); dialog = false">
+                        Đồng ý
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </div>
     <br />
     <hr>
@@ -235,10 +262,13 @@ export default {
 
     data() {
         return {
+            selectItem: null,
+            imageCurrentShow: null,
+            dialog: false,
             errorGetData: {
-            "message": "",
-            "status": ""
-        },
+                "message": "",
+                "status": ""
+            },
             overlay: false,
             selected: [],
             singleSelect: false,
@@ -294,7 +324,7 @@ export default {
                 }
             ],
             image: null,
-            urlImage: '',
+            urlImage: null,
             items: [{
                     src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
                 },
@@ -312,8 +342,29 @@ export default {
     },
     mounted: async function () {
         await this.handleData('ALL')
+        let resp = await HTTP.get("image_slide/")
+        if (resp.status == 200) {
+            this.items = resp.data
+        }
+        console.log(this.items)
     },
     methods: {
+        async deleteImage() {
+            this.overlay = true
+            try {
+
+                let resp = await HTTP.delete(`image_slide/${this.imageCurrentShow.id}`)
+                if (resp.status == 200) {
+                    console.log('delete success')
+                    this.items.splice(this.items.indexOf(this.selectItem), 1)
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+            this.overlay = false
+
+        },
         resetAlert() {
             setTimeout(() => {
                 this.errorGetData.message = ''
@@ -346,15 +397,15 @@ export default {
                 this.errorGetData.status = 'error'
                 this.errorGetData.message = err
             }
-            setTimeout(()=>{
-                this.overlay = false 
+            setTimeout(() => {
+                this.overlay = false
             }, 1000)
             this.resetAlert()
         },
         deleteFunc: async function () {
 
             var err = ''
-            this.overlay = true 
+            this.overlay = true
             for (let index = 0; index < this.selected.length; index += 1) {
                 try {
                     let resp = await HTTP.delete(`article/${this.selected[index].id}`)
@@ -377,17 +428,17 @@ export default {
                 this.errorGetData.status = 'error'
                 this.errorGetData.message = err
             }
-            setTimeout(()=>{
-                this.overlay = false 
+            setTimeout(() => {
+                this.overlay = false
             }, 1000)
             this.resetAlert()
 
         },
         async handleData(tab) {
-            this.overlay = true 
+            this.overlay = true
             await this.getAllData(tab.toUpperCase())
-            setTimeout(() =>{
-                this.overlay = false 
+            setTimeout(() => {
+                this.overlay = false
             }, 1000)
         },
 
@@ -396,11 +447,28 @@ export default {
             this.urlImage = URL.createObjectURL(this.image)
 
         },
-        addItem() {
-            this.items.push({
-                src: this.urlImage
-            })
+        async addItem() {
+            this.overlay = true
+            if (this.urlImage == null) {
+                alert("Chưa có ảnh nào được chọn")
+            } else {
+                try {
+                    let fd = new FormData()
+                    fd.append('image', this.image, this.image.name)
+                    let resp = await HTTP.post('image_slide/', fd)
+                    if (resp.status == 200) {
+
+                        console.log('success')
+                        this.items.push(resp.data)
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+
+            }
             this.clearSelectFile()
+            this.overlay = false
         },
         clearSelectFile() {
             try {
