@@ -64,7 +64,7 @@
                 <v-tab-item key="All">
                     <v-card color="basil" flat>
                         <template>
-                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[0].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5">
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[0].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="id" show-expand class="elevation-5">
                                 <template v-slot:top>
                                     <v-toolbar flat>
                                         <v-switch v-model="singleSelect" label="Single select" class="pa-3"></v-switch>
