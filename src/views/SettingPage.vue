@@ -114,7 +114,7 @@
                 <v-tab-item key="Process">
                     <v-card color="basil" flat>
                         <template>
-                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[1].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5"> <template v-slot:top>
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[1].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="id" show-expand class="elevation-5"> <template v-slot:top>
                                     <v-toolbar flat>
                                         <!-- <v-switch v-model="singleSelect" label="Single select" class="pa-3"></v-switch> -->
                                         <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
@@ -160,7 +160,7 @@
                 <v-tab-item key="Pending">
                     <v-card color="basil" flat>
                         <template>
-                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[2].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5"> <template v-slot:top>
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[2].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="id" show-expand class="elevation-5"> <template v-slot:top>
                                     <v-toolbar flat>
                                         <v-switch v-model="singleSelect" label="Single select" class="pa-3"></v-switch>
                                         <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
@@ -207,7 +207,7 @@
                 <v-tab-item key="Done">
                     <v-card color="basil" flat>
                         <template>
-                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[3].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="title" show-expand class="elevation-5"> <template v-slot:top>
+                            <v-data-table v-model="selected" :headers="dessertHeaders" :items="tabItems[3].data" :single-expand="singleExpand" :single-select="singleSelect" show-select :expanded.sync="expanded" item-key="id" show-expand class="elevation-5"> <template v-slot:top>
                                     <v-toolbar flat>
                                         <!-- <v-toolbar-title>Expandable Table</v-toolbar-title> -->
                                         <v-spacer></v-spacer>
@@ -352,7 +352,6 @@ export default {
         async deleteImage() {
             this.overlay = true
             try {
-
                 let resp = await HTTP.delete(`image_slide/${this.imageCurrentShow.id}`)
                 if (resp.status == 200) {
                     console.log('delete success')
@@ -377,7 +376,7 @@ export default {
             this.overlay = true
             for (let index = 0; index < this.selected.length; index += 1) {
                 try {
-                    let resp = await HTTP.put(`article/${this.selected[index].id}?statusArticle=DONE`)
+                    let resp = await HTTP.put(`article/${this.selected[index].id}?statusArticle=DONE`,{})
                     if (resp.status == 200) {
                         console.log('delete success')
                         this.tabItems[this.tab].data.splice(this.selected[index], 1)
