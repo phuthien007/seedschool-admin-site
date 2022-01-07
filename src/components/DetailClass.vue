@@ -16,7 +16,7 @@
                             Thêm giáo viên
                         </v-card-title>
 
-                        <v-checkbox v-for="item in activityList" :key="item.id" v-model="selected" :label="labelDisplay(item.name, item.teacherId)" :value="item.id">he</v-checkbox>
+                        <v-checkbox v-for="item in dataList" :key="item.id" v-model="selected" :label="labelDisplay(item.name, item.teacherId)" :value="item.id">he</v-checkbox>
 
                         <v-divider></v-divider>
 
@@ -133,8 +133,7 @@
                                     Thêm hoạt động
                                 </v-card-title>
 
-                                <p>{{ selected }}</p>
-                                <v-checkbox v-for="item in activityList" :key="item.id" v-model="selected" :label="item.nameActivity" :value="item.id"></v-checkbox>
+                                <v-checkbox v-for="item in dataList" :key="item.id" v-model="selected" :label="item.nameActivity" :value="item.id"></v-checkbox>
 
                                 <v-divider></v-divider>
 
