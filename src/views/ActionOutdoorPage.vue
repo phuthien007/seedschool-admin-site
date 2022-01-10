@@ -517,6 +517,15 @@ export default {
                                         color: this.colors[this.rnd(0, this.colors.length - 1)],
                                         timed: 1,
                                     })
+                                    this.events.push({
+                                        id: data[i].id,
+                                        data: data[i],
+                                        name: data[i].nameActivity,
+                                        start: first,
+                                        end: second,
+                                        color: this.colors[this.rnd(0, this.colors.length - 1)],
+                                        timed: 0,
+                                    })
                                 }
 
                             }
