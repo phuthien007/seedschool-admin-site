@@ -1,92 +1,49 @@
 <template>
 <v-card class="mr-4">
     <v-tabs color="deep-purple accent-4" right>
-        <v-tab>Tổng hợp</v-tab>
+
         <v-tab>Thu</v-tab>
         <v-tab>Chi</v-tab>
-
-        <v-tab-item>
-            <template>
-                <v-card>
-                    <v-toolbar flat color="primary" dark>
-                        <v-toolbar-title>Tổng hợp</v-toolbar-title>
-                    </v-toolbar>
-                    <v-tabs vertical>
-                        <v-tab>
-                            Tổng hợp
-                        </v-tab>
-                        <v-tab>
-                            Thống kê thu
-                        </v-tab>
-                        <v-tab>
-                            Thống kê chi
-                        </v-tab>
-
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    <p>
-                                        Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi ac felis. Etiam feugiat lorem non metus. Sed a libero.
-                                    </p>
-
-                                    <p>
-                                        Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Aliquam lobortis. Aliquam lobortis. Suspendisse non nisl sit amet velit hendrerit rutrum.
-                                    </p>
-
-                                    <p class="mb-0">
-                                        Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Phasellus blandit leo ut odio.
-                                    </p>
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    <p>
-                                        Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc sed turpis.
-                                    </p>
-
-                                    <p>
-                                        Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In hac habitasse platea dictumst. Fusce ac felis sit amet ligula pharetra condimentum.
-                                    </p>
-
-                                    <p>
-                                        Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Nam commodo suscipit quam. In consectetuer turpis ut velit. Sed cursus turpis vitae tortor. Aliquam eu nunc.
-                                    </p>
-
-                                    <p>
-                                        Etiam ut purus mattis mauris sodales aliquam. Ut varius tincidunt libero. Aenean viverra rhoncus pede. Duis leo. Fusce fermentum odio nec arcu.
-                                    </p>
-
-                                    <p class="mb-0">
-                                        Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. Fusce commodo aliquam arcu. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.
-                                    </p>
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-card flat>
-                                <v-card-text>
-                                    <p>
-                                        Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.
-                                    </p>
-
-                                    <p class="mb-0">
-                                        Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum sagittis.
-                                    </p>
-                                </v-card-text>
-                            </v-card>
-                        </v-tab-item>
-                    </v-tabs>
-                </v-card>
-            </template>
-
-        </v-tab-item>
         <v-tab-item>
             <template>
                 <v-card>
                     <v-toolbar flat color="primary" dark>
                         <v-toolbar-title>Thu</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <template>
+                            <div class="text-center">
+                                <v-dialog v-model="dialog" width="500">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn color="green lighten-1" dark v-bind="attrs" v-on="on">
+                                            Thêm mới
+                                        </v-btn>
+                                    </template>
+
+                                    <v-card>
+                                        <v-card-title class="text-h5 grey lighten-2">
+                                            Thêm mới
+                                        </v-card-title>
+                                        <v-form id="fm">
+                                            <div class="pl-2 pr-2">
+                                                <v-text-field label="Tên khoản" v-model="newData.name" hide-details="auto"></v-text-field>
+                                                <v-text-field label="Người ủng hộ" v-model="newData.contributor"></v-text-field>
+                                                <v-text-field type="number" v-model="newData.amountOfMoney" label="Số tiền"></v-text-field>
+                                                <v-text-field label="Ghi chú" v-model="newData.note"></v-text-field>
+                                                <v-select label="Loại" v-model="newData.type" :items="itemSelect"></v-select>
+                                            </div>
+                                        </v-form>
+                                        <v-divider></v-divider>
+
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="primary" text @click="dialog = false; addRever()">
+                                                Thêm
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+                            </div>
+                        </template>
                     </v-toolbar>
                     <v-tabs vertical>
                         <v-tab>
@@ -107,7 +64,7 @@
                                 </v-card-text>
 
                                 <v-divider></v-divider>
-                                <v-data-table  :headers="headers.feeStudent" :items="desserts" item-key="name" sort-by="name" group-by="category" class="elevation-1" show-group-by></v-data-table>
+                                <v-data-table :headers="headers.feeStudent" :items="desserts" item-key="name" sort-by="name" group-by="lớp" class="elevation-1" show-group-by></v-data-table>
                             </v-card>
                         </v-tab-item>
                         <v-tab-item>
@@ -118,7 +75,7 @@
                                 </v-card-text>
 
                                 <v-divider></v-divider>
-                                <v-data-table  :headers="headers.sponsor" :items="desserts" item-key="name" sort-by="name" class="elevation-1" ></v-data-table>
+                                <v-data-table :headers="headers.sponsor" :items="data.sponsor" item-key="id" sort-by="name" class="elevation-1"></v-data-table>
                             </v-card>
                         </v-tab-item>
                         <v-tab-item>
@@ -128,7 +85,7 @@
                                     Thông tin các khoản đóng góp thêm
                                 </v-card-text>
                                 <v-divider></v-divider>
-                                <v-data-table  :headers="headers.contributeMore" :items="desserts" item-key="name" sort-by="name" class="elevation-1" ></v-data-table>
+                                <v-data-table :headers="headers.contributeMore" :items="data.donate" item-key="id" sort-by="name" class="elevation-1"></v-data-table>
                             </v-card>
                         </v-tab-item>
                     </v-tabs>
@@ -141,6 +98,8 @@
                 <v-card>
                     <v-toolbar flat color="primary" dark>
                         <v-toolbar-title>Chi</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn dark color="green">Thêm mới</v-btn>
                     </v-toolbar>
                     <v-tabs vertical>
                         <v-tab>
@@ -158,7 +117,7 @@
                                 </v-card-text>
 
                                 <v-divider></v-divider>
-                                <v-data-table  :headers="headers.teacherSalary" :items="desserts" item-key="name" sort-by="name" class="elevation-1" ></v-data-table>
+                                <v-data-table :headers="headers.teacherSalary" :items="desserts" item-key="name" sort-by="name" class="elevation-1"></v-data-table>
                             </v-card>
                         </v-tab-item>
                         <v-tab-item>
@@ -168,7 +127,7 @@
                                     Thông tin các khoản chi thêm
                                 </v-card-text>
                                 <v-divider></v-divider>
-                                <v-data-table  :headers="headers.additionalExpenses" :items="desserts" item-key="name" sort-by="name" class="elevation-1" ></v-data-table>
+                                <v-data-table :headers="headers.additionalExpenses" :items="data.cost" item-key="name" sort-by="name" class="elevation-1"></v-data-table>
                             </v-card>
                         </v-tab-item>
 
@@ -182,10 +141,22 @@
 </template>
 
 <script>
+import {
+    HTTP
+} from '../api/index'
 export default {
     name: "fee-school-page",
     data() {
         return {
+            newData: {
+                "amountOfMoney": 0,
+                "contributor": "",
+                "name": "",
+                "note": "",
+                "type": "DONATE"
+            },
+            itemSelect: ['Tài trợ', 'Đóng góp'],
+            dialog: false,
             headers: {
                 'feeStudent': [{
                         text: 'Tên học sinh',
@@ -195,7 +166,7 @@ export default {
                     },
                     {
                         text: 'Lớp',
-                        value: 'category',
+                        value: 'lớp',
                         align: 'right'
                     },
                     {
@@ -206,7 +177,7 @@ export default {
                     },
                     {
                         text: 'Các khoản còn lại',
-                        value: 'dairy',
+                        value: 'fee',
                         align: 'right',
                         groupable: false,
                     },
@@ -224,140 +195,202 @@ export default {
                     },
                     {
                         text: 'Người đóng góp',
-                        value: 'category',
+                        value: 'contributor',
                         align: 'center'
                     },
                     {
                         text: 'Số tiền',
-                        value: 'dairy',
+                        value: 'amountOfMoney',
                         align: 'center',
                     },
-                
+
                     {
                         text: 'Ghi chú',
-                        value: 'dairy',
+                        value: 'note',
                         align: 'right',
                     },
                 ],
                 sponsor: [{
-                        text: 'Tên nhà tài trợ',
+                        text: 'Tên quỹ tài trợ',
                         align: 'start',
                         value: 'name',
-                        groupable: false,
                     },
                     {
-                        text: 'Số tiền tài trợ',
-                        value: 'category',
+                        text: 'Tên nhà tài trợ',
+                        value: 'contributor',
                         align: 'center'
                     },
                     {
+                        text: 'Số tiền',
+                        value: 'amountOfMoney',
+                        align: 'center',
+                    },
+
+                    {
                         text: 'Ghi chú',
-                        value: 'dairy',
+                        value: 'note',
                         align: 'right',
-                        groupable: false,
                     },
                 ],
                 teacherSalary: [{
                         text: 'Tên giao viên',
                         align: 'start',
                         value: 'name',
-                        groupable: false,
+
                     },
                     {
                         text: "Lương tháng T",
-                        value: 'category',
+                        value: 'fee',
                         align: 'center'
                     },
                     {
                         text: 'Tiền thưởng tháng',
-                        value: 'category',
+                        value: 'fee',
                         align: 'center'
                     },
                     {
                         text: 'Ghi chú',
                         value: 'dairy',
                         align: 'right',
-                        groupable: false,
+
                     },
                 ],
                 additionalExpenses: [{
-                        text: 'Tên nhà tài trợ',
+                        text: 'Mô tả',
                         align: 'start',
-                        value: 'name',
-                        groupable: false,
+                        value: 'description',
+
                     },
                     {
                         text: 'Số tiền tài trợ',
-                        value: 'category',
+                        value: 'amountOfMoney',
                         align: 'center'
                     },
                     {
                         text: 'Ghi chú',
-                        value: 'dairy',
+                        value: 'note',
                         align: 'right',
-                        groupable: false,
+
                     },
                 ],
             },
 
             desserts: [{
                     name: 'Frozen Yogurt',
-                    category: 'Ice cream',
-                    dairy: 'Yes',
+                    lớp: '1A',
+                    dairy: 'chưa đóng',
+                    fee: 100
                 },
                 {
                     name: 'Ice cream sandwich',
-                    category: 'Ice cream',
-                    dairy: 'Yes',
+                    lớp: '1A',
+                    dairy: 'chưa đóng',
+                    fee: 100
+
                 },
                 {
                     name: 'Eclair',
-                    category: 'Cookie',
-                    dairy: 'Yes',
+                    lớp: '1A',
+                    dairy: 'chưa đóng',
+                    fee: 100
+
                 },
                 {
                     name: 'Cupcake',
-                    category: 'Pastry',
-                    dairy: 'Yes',
+                    lớp: '1B',
+                    dairy: 'chưa đóng',
+                    fee: 100
+
                 },
                 {
                     name: 'Gingerbread',
-                    category: 'Cookie',
-                    dairy: 'No',
+                    lớp: '1B',
+                    dairy: 'đã đủ',
+                    fee: 0
+
                 },
                 {
                     name: 'Jelly bean',
-                    category: 'Candy',
-                    dairy: 'No',
+                    lớp: '2A',
+                    dairy: 'đã đủ',
+                    fee: 0
                 },
+
                 {
                     name: 'Lollipop',
-                    category: 'Candy',
-                    dairy: 'No',
+                    lớp: '2B',
+                    dairy: 'đã đủ',
+                    fee: 0
                 },
                 {
                     name: 'Honeycomb',
-                    category: 'Toffee',
-                    dairy: 'No',
+                    lớp: '3A',
+                    dairy: 'chưa đóng',
+                    fee: 100
+
                 },
                 {
                     name: 'Donut',
-                    category: 'Pastry',
-                    dairy: 'Yes',
+                    lớp: '5A',
+                    dairy: 'chưa đóng',
+                    fee: 100
+
                 },
                 {
                     name: 'KitKat',
-                    category: 'Candy',
-                    dairy: 'Yes',
+                    lớp: '5B',
+                    dairy: 'đã đủ',
+                    fee: 0
                 },
             ],
+            data: {
+                donate: [],
+                sponsor: [],
+                cost: []
+            }
         }
     },
-
     computed: {
-        getDate(){
-            return new Date().getMonth()+1
+        getDate() {
+            return new Date().getMonth() + 1
         }
+    },
+    mounted: async function () {
+        try {
+            let resp1 = HTTP.get(`revenue?typeRevenue=DONATE`)
+            let resp2 = HTTP.get(`revenue?typeRevenue=SPONSOR`)
+            let resp3 = HTTP.get(`cost/`)
+            this.data.donate = (await resp1).data
+            this.data.sponsor = (await resp2).data
+            this.data.cost = (await resp3).data
+
+            console.log(this.data)
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    methods: {
+        async addRever() {
+            let type = 1
+            if (this.newData.type == 'Tài trợ') {
+                this.newData.type = 'SPONSOR'
+            } else {
+                this.newData.type = 'DONATE'
+                type = 2
+            }
+            let resp = await HTTP.post('revenue/', this.newData)
+
+            if (resp.status == 200) {
+                if (type == 1) {
+                    this.data.sponsor.push(resp.data)
+                } else {
+                    this.data.donate.push(resp.data)
+                }
+            }
+        }
+    },
+    filters: {
+
     }
 }
 </script>
