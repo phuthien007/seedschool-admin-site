@@ -250,7 +250,7 @@ export default {
                     },
                     {
                         text: 'Ghi chú',
-                        value: 'dairy',
+                        value: 'note',
                         align: 'right',
 
                     },
@@ -279,68 +279,78 @@ export default {
                     name: 'Frozen Yogurt',
                     lớp: '1A',
                     dairy: 'chưa đóng',
-                    fee: 100
+                    fee: 100,
+                    note:''
                 },
                 {
                     name: 'Ice cream sandwich',
                     lớp: '1A',
                     dairy: 'chưa đóng',
                     fee: 100
-
+,
+                    note:''
                 },
                 {
                     name: 'Eclair',
                     lớp: '1A',
                     dairy: 'chưa đóng',
                     fee: 100
-
+,
+                    note:''
                 },
                 {
                     name: 'Cupcake',
                     lớp: '1B',
                     dairy: 'chưa đóng',
                     fee: 100
-
+,
+                    note:''
                 },
                 {
                     name: 'Gingerbread',
                     lớp: '1B',
                     dairy: 'đã đủ',
                     fee: 0
-
+,
+                    note:''
                 },
                 {
                     name: 'Jelly bean',
                     lớp: '2A',
                     dairy: 'đã đủ',
-                    fee: 0
+                    fee: 0,
+                    note:''
                 },
 
                 {
                     name: 'Lollipop',
                     lớp: '2B',
                     dairy: 'đã đủ',
-                    fee: 0
+                    fee: 0,
+                    note:''
                 },
                 {
                     name: 'Honeycomb',
                     lớp: '3A',
                     dairy: 'chưa đóng',
-                    fee: 100
+                    fee: 100,
+                    note:''
 
                 },
                 {
                     name: 'Donut',
                     lớp: '5A',
                     dairy: 'chưa đóng',
-                    fee: 100
+                    fee: 100,
+                    note:''
 
                 },
                 {
                     name: 'KitKat',
                     lớp: '5B',
                     dairy: 'đã đủ',
-                    fee: 0
+                    fee: 0,
+                    note:''
                 },
             ],
             data: {
